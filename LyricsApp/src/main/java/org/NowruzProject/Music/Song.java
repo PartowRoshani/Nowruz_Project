@@ -2,7 +2,7 @@ package org.NowruzProject.Music;
 
 import org.NowruzProject.Accounts.Artist;
 import org.NowruzProject.Accounts.User;
-import org.NowruzProject.Comment;
+import org.NowruzProject.Comments.Comment;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.NowruzProject;
+package org.NowruzProject.Accounts;
 
 public enum AccountType {
     USER, ARTIST, ADMIN

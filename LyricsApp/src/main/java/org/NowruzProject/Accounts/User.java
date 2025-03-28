@@ -1,6 +1,6 @@
 package org.NowruzProject.Accounts;
 
-import org.NowruzProject.AccountType;
+import org.NowruzProject.Accounts.AccountType;
 import org.NowruzProject.Music.Song;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,5 +61,27 @@ public class User extends Account {
     //dislike songs
     public void dislikeSong(Song song) {
         song.dislike(this);
+    }
+
+    // Suggest songs based on followed artists
+    public void showSuggestions() {
+        //suggestion based on followed artists
+        System.out.println(getUsername() + "'s Suggested Songs:");
+        List<Song> suggestedSongs = new ArrayList<>();
+
+        // add songs to the list
+        for (Artist artist : followingArtists) {
+            for (Song song : artist.getSongs()) {
+                if (!suggestedSongs.contains(song)) {
+                    suggestedSongs.add(song);
+                    System.out.println(song.getTitle() + " by " + artist.getUsername());
+                }
+            }
+        }
+
+        // no suggest is available
+        if (suggestedSongs.isEmpty()) {
+            System.out.println("No suggestions available.");
+        }
     }
 }

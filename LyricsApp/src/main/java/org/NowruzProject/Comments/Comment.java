@@ -1,7 +1,9 @@
-package org.NowruzProject;
+package org.NowruzProject.Comments;
 
 import org.NowruzProject.Accounts.User;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Comment {
@@ -18,6 +20,7 @@ public class Comment {
         this.date = LocalDateTime.now();
     }
 
+    //getters
     public String getText() {
         return text;
     }
@@ -42,13 +45,14 @@ public class Comment {
         if (obj == null || getClass() != obj.getClass()) return false;
         Comment comment = (Comment) obj;
         return Objects.equals(text, comment.text) &&
-                Objects.equals(user, comment.user) &&
-                Objects.equals(date, comment.date);
+                Objects.equals(user, comment.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text, user, date);
+        return Objects.hash(text, user);
     }
+
+
 }
 

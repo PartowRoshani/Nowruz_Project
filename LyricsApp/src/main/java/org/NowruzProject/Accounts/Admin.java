@@ -1,6 +1,6 @@
 package org.NowruzProject.Accounts;
 
-import org.NowruzProject.AccountType;
+import org.NowruzProject.Accounts.AccountType;
 import org.NowruzProject.Music.Song;
 import org.NowruzProject.Music.Album;
 import java.util.List;
