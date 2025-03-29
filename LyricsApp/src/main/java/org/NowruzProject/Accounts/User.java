@@ -4,6 +4,7 @@ import org.NowruzProject.Accounts.AccountType;
 import org.NowruzProject.Music.Song;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class User extends Account {
     private final List<Artist> followingArtists;  // Artist list
@@ -15,11 +16,28 @@ public class User extends Account {
 
     // Method for follow artists
     public void followArtist(Artist artist) {
-        if (!followingArtists.contains(artist)) {
-            followingArtists.add(artist);
-            System.out.println(getUsername() + " is now following " + artist.getUsername());
+        if (artist == null) {
+            System.out.println("Artist not found.");
+            return;
+        }
+
+        // نمایش اطلاعات هنرمند
+        artist.showArtistInfo();
+
+        // دریافت تأیید از کاربر
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Do you want to follow this artist? (yes/no): ");
+        String response = scanner.nextLine().trim().toLowerCase();
+
+        if (response.equals("yes")) {
+            if (!followingArtists.contains(artist)) {
+                followingArtists.add(artist);
+                System.out.println("You are now following " + artist.getUsername() + "!");
+            } else {
+                System.out.println("You are already following " + artist.getUsername() + ".");
+            }
         } else {
-            System.out.println(getUsername() + " is already following " + artist.getUsername());
+            System.out.println("Follow request cancelled.");
         }
     }
 

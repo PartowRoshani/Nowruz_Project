@@ -4,11 +4,14 @@ import org.NowruzProject.Accounts.AccountType;
 import org.NowruzProject.Music.Song;
 import org.NowruzProject.Music.Album;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Artist extends Account {
     private List<Song> songs;  // the list of artist's music
     private List<Album> albums; // the lists of artist's albums
+    private static Set<Artist> allArtists = new HashSet<>();
     private boolean approved;
     private boolean active;
     public Artist(String username, String password, String email, String fullName, int age) {
@@ -17,6 +20,7 @@ public class Artist extends Account {
         this.albums = new ArrayList<>();
         this.approved = false;
         this.active = true;
+        allArtists.add(this);
 
     }
 
@@ -52,12 +56,28 @@ public class Artist extends Account {
 
     // show the list of musics or albums
     public void showSongs() {
-        System.out.println(getUsername() + "'s Songs: " + songs);
+        System.out.println(getUsername() + "'s Songs:");
+        if (songs.isEmpty()) {
+            System.out.println("No songs available.");
+        } else {
+            for (Song song : songs) {
+                System.out.println("- " + song.getTitle() + " (Released: " + song.getReleaseDate() + ", Genre: " + song.getGenre() + ")");
+            }
+        }
     }
 
+
     public void showAlbums() {
-        System.out.println(getUsername() + "'s Albums: " + albums);
+        System.out.println(getUsername() + "'s Albums:");
+        if (albums.isEmpty()) {
+            System.out.println("No albums available.");
+        } else {
+            for (Album album : albums) {
+                System.out.println("- " + album.getTitle() + " (Released: " + album.getReleaseDate() + ")");
+            }
+        }
     }
+
 
     public void editSong(Song song, String newLyrics) {
         if (songs.contains(song)) {
@@ -82,6 +102,11 @@ public class Artist extends Account {
         return active;
     }
 
+    public static Set<Artist> getAllArtists() {
+        return allArtists;
+    }
+
+
 
 
 
@@ -100,5 +125,16 @@ public class Artist extends Account {
     public void viewAlbums() {
         showAlbums();
     }
+
+    public void showArtistInfo() {
+        System.out.println("\n=== Artist Information ===");
+        System.out.println("Name: " + getFullName());
+        System.out.println("Username: " + getUsername());
+        System.out.println("Approved: " + (isApproved() ? "Yes" : "No"));
+        System.out.println("Active: " + (isActive() ? "Yes" : "No"));
+        System.out.println("Number of Songs: " + songs.size());
+        System.out.println("Number of Albums: " + albums.size());
+    }
+
 
 }

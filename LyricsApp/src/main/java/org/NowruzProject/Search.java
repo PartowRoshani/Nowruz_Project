@@ -1,6 +1,7 @@
 package org.NowruzProject;
 import org.NowruzProject.Accounts.Artist;
 import org.NowruzProject.Music.Album;
+import org.NowruzProject.Music.MusicManager;
 import org.NowruzProject.Music.Song;
 
 import java.util.ArrayList;
@@ -18,24 +19,12 @@ public class Search {
     }
 
     // Search for artists by name
-    public List<Artist> searchArtists(String query) {
-        List<Artist> result = new ArrayList<>();
-        for (Artist artist : artists) {
-            if (artist.getFullName().toLowerCase().contains(query.toLowerCase())) {
-                result.add(artist);
-            }
-        }
-        return result;
+    public static Song searchSongByTitle(String title) {
+        return MusicManager.findSongByTitle(title);
     }
+
     // Search for songs by title or artist name
-    public List<Song> searchSongs(String query) {
-        List<Song> result = new ArrayList<>();
-        for (Song song : songs) {
-            if (song.getTitle().toLowerCase().contains(query.toLowerCase()) ||
-                    song.getArtist().getFullName().toLowerCase().contains(query.toLowerCase())) {
-                result.add(song);
-            }
-        }
-        return result;
+    public static List<Song> searchSongsByArtist(String artistName) {
+        return MusicManager.findSongsByArtist(artistName);
     }
 }

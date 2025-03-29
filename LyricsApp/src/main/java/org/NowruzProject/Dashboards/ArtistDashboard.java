@@ -4,6 +4,7 @@ import org.NowruzProject.Accounts.Account;
 import org.NowruzProject.Accounts.User;
 import org.NowruzProject.Accounts.Artist;
 import org.NowruzProject.Music.Genre;
+import org.NowruzProject.Music.MusicManager;
 import org.NowruzProject.Search;
 import org.NowruzProject.Music.Song;
 import org.NowruzProject.Music.Album;
@@ -120,6 +121,7 @@ public class ArtistDashboard extends Dashboard {
                 // Create new Song
                 Song newSong = new Song(songTitle, artist, releaseDate, album, genre, 0, new ArrayList<>());
                 artist.addSong(newSong);
+                MusicManager.addSong(newSong);
 
                 System.out.print("Enter lyrics for the song: ");
                 String lyrics = scanner.nextLine();
@@ -132,7 +134,7 @@ public class ArtistDashboard extends Dashboard {
                 artist.showSongs();
                 return true;
             case 3:
-                artist.showAlbums();
+                artist.viewAlbums();
                 return true;
             case 4:
                 System.out.print("Enter album title: ");

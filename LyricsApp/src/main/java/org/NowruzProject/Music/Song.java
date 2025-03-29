@@ -19,7 +19,7 @@ public class Song {
     private final List<String> editRequests; // edit requests list
     private final Album album;
     private final Genre genre;
-    private int viewsCount;
+    private static int viewsCount;
     private final List<String> tags;
 
     // constructor
@@ -120,7 +120,7 @@ public class Song {
     }
 
     //count viewers
-    public void increaseViewCount() {
+    public static void increaseViewCount() {
         viewsCount++;
     }
 
