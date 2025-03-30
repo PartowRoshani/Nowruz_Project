@@ -12,7 +12,7 @@ import java.util.List;
 public class UserDashboard extends Dashboard {
     private User user;
     private Search search;
-    private List<Song> songs; // اضافه کردن لیست آهنگ‌ها
+    private List<Song> songs; // list of songs
 
     public UserDashboard(User user, List<Artist> artists, List<Song> songs, List<Album> albums) {
         super(user);
@@ -73,7 +73,6 @@ public class UserDashboard extends Dashboard {
                 return true;
             case 10:
                 searchBySongTitle();
-                Song.increaseViewCount();
                 return true;
             case 11:
                 System.out.println("Logging out...");
@@ -167,6 +166,7 @@ public class UserDashboard extends Dashboard {
             int choice = Integer.parseInt(scanner.nextLine());
             if (choice > 0 && choice <= songs.size()) {
                 Song selectedSong = songs.get(choice - 1);
+                selectedSong.increaseViewCount();
                 System.out.println("\n=== Song Details ===");
                 System.out.println("Title: " + selectedSong.getTitle());
                 System.out.println("Artist: " + selectedSong.getArtist().getUsername());
@@ -186,6 +186,7 @@ public class UserDashboard extends Dashboard {
         if (song == null) {
             System.out.println("No song found with this title.");
         } else {
+            song.increaseViewCount();
             System.out.println("\n=== Song Details ===");
             System.out.println("Title: " + song.getTitle());
             System.out.println("Artist: " + song.getArtist().getUsername());
@@ -197,12 +198,7 @@ public class UserDashboard extends Dashboard {
     }
 
     private Song findSongByTitle(String title) {
-        for (Song song : songs) {
-            if (song.getTitle().equalsIgnoreCase(title)) {
-                return song;
-            }
-        }
-        return null;
+        return MusicManager.findSongByTitle(title);
     }
 
     public void showAllSongs() {

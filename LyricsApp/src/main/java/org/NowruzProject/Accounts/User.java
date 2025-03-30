@@ -21,10 +21,10 @@ public class User extends Account {
             return;
         }
 
-        // نمایش اطلاعات هنرمند
+        // Show artist info
         artist.showArtistInfo();
 
-        // دریافت تأیید از کاربر
+        // get accept
         Scanner scanner = new Scanner(System.in);
         System.out.print("Do you want to follow this artist? (yes/no): ");
         String response = scanner.nextLine().trim().toLowerCase();

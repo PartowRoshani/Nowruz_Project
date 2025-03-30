@@ -88,7 +88,7 @@ public class MusicManager {
 
 
     public static Artist getArtistByUsername(String username) {
-        for (Artist artist : Artist.getAllArtists()) { // دسترسی درست به لیست هنرمندان
+        for (Artist artist : Artist.getAllArtists()) { // artists list
             if (artist.getUsername().equals(username)) {
                 return artist;
             }
