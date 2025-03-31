@@ -136,5 +136,26 @@ public class Artist extends Account {
         System.out.println("Number of Albums: " + albums.size());
     }
 
+    // Method for approving or rejecting an edit request by the artist
+    public void handleEditRequest(Song song, String requestedChange, boolean approve) {
+        if (approve) {
+            song.setLyrics(requestedChange);
+            System.out.println("Change approved. Lyrics updated.");
+        } else {
+            System.out.println("Change rejected.");
+        }
+        song.getEditRequests().remove(requestedChange); // Remove request
+    }
 
+
+
+
+    public Song findSong(String title) {
+        for (Song song : songs) {
+            if (song.getTitle().equalsIgnoreCase(title)) {
+                return song;
+            }
+        }
+        return null;
+    }
 }

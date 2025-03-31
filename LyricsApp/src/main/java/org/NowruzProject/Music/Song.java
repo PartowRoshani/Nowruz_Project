@@ -70,6 +70,22 @@ public class Song {
         System.out.println("Lyrics edit request sent for " + title + " by " + user.getUsername());
     }
 
+    public void approveEditRequest(int requestIndex, boolean approve) {
+        if (requestIndex >= 0 && requestIndex < editRequests.size()) {
+            String requestedLyrics = editRequests.get(requestIndex).split(": ")[1];
+            if (approve) {
+                setLyrics(requestedLyrics); // Apply the new lyrics if approved
+                System.out.println("Lyrics for " + title + " updated to: " + requestedLyrics);
+            } else {
+                System.out.println("Lyrics edit request for " + title + " rejected.");
+            }
+            editRequests.remove(requestIndex); // Remove the request after handling
+        } else {
+            System.out.println("Invalid request index.");
+        }
+    }
+
+
     // Method for add comments
     public void addComment(User user, String text) {
         comments.add(new Comment(text, user));

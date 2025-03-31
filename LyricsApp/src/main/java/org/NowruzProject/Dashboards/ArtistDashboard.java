@@ -26,7 +26,12 @@ public class ArtistDashboard extends Dashboard {
         System.out.println("2. View My Songs");
         System.out.println("3. View My Albums");
         System.out.println("4. Add an Album");
-        System.out.println("5. Logout");
+        System.out.println("5. Remove a Song");
+        System.out.println("6. Remove an Album");
+        System.out.println("7. Edit Song Lyrics");
+        System.out.println("8. Set Active Status");
+        System.out.println("9. View Lyrics Change Requests");
+        System.out.println("10. Logout");
         System.out.print("Choose an option: ");
     }
 
@@ -143,9 +148,71 @@ public class ArtistDashboard extends Dashboard {
                 String newAlbumReleaseDate = scanner.nextLine();
                 artist.addAlbum(new Album(newAlbumTitle, newAlbumReleaseDate, artist));
                 return true;
-            case 5:
+            case 5 :
+                System.out.print("Enter song title to remove: ");
+                String removeSongTitle = scanner.nextLine();
+                Song songToRemove = artist.findSong(removeSongTitle);
+                if (songToRemove != null) {
+                    artist.removeSong(songToRemove);
+                } else {
+                    System.out.println("Song not found.");
+                }
+                return true;
+            case 6:
+                System.out.print("Enter album title to remove: ");
+                String removeAlbumTitle = scanner.nextLine();
+                artist.removeAlbum(removeAlbumTitle);
+                return true;
+            case 7 :
+                System.out.print("Enter song title to edit: ");
+                String editSongTitle = scanner.nextLine();
+                Song songToEdit = artist.findSong(editSongTitle);
+                if (songToEdit != null) {
+                    System.out.print("Enter new lyrics: ");
+                    String newLyrics = scanner.nextLine();
+                    artist.editSong(songToEdit, newLyrics);
+                } else {
+                    System.out.println("Song not found.");
+                }
+                return true;
+            case 8:
+                System.out.print("Set active status (true/false): ");
+                boolean isActive = Boolean.parseBoolean(scanner.nextLine());
+                artist.setActive(isActive);
+                System.out.println("Active status updated.");
+                return true;
+            case 9:
+                System.out.print("Enter song title to view change requests: ");
+                String songTitle1 = scanner.nextLine();
+                Song song = artist.findSong(songTitle1);
+
+                if (song != null && !song.getEditRequests().isEmpty()) {
+                    System.out.println("Change requests for " + song.getTitle() + ":");
+                    for (int i = 0; i < song.getEditRequests().size(); i++) {
+                        System.out.println((i + 1) + ". " + song.getEditRequests().get(i));
+                    }
+
+                    System.out.print("Enter the request number to approve/reject or 0 to go back: ");
+                    int requestChoice = Integer.parseInt(scanner.nextLine());
+
+                    if (requestChoice > 0 && requestChoice <= song.getEditRequests().size()) {
+                        System.out.print("Approve change? (yes/no): ");
+                        String approval = scanner.nextLine();
+
+                        // Get the suggested lyrics and send to handle request
+                        String editRequestText = song.getEditRequests().get(requestChoice - 1);
+                        artist.handleEditRequest(song, editRequestText, approval.equalsIgnoreCase("yes"));
+                    }
+                } else {
+                    System.out.println("No change requests found.");
+                }
+                return true;
+
+
+            case 10:
                 System.out.println("Logging out...");
                 return false;
+
             default:
                 System.out.println("Invalid choice. Try again.");
                 return true;
