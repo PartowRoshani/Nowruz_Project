@@ -34,7 +34,9 @@ public class UserDashboard extends Dashboard {
         System.out.println("8. Dislike a Song");
         System.out.println("9. Search for Artists");
         System.out.println("10. Search for Songs");
-        System.out.println("11. Logout");
+        System.out.println("11. View all songs in the app");
+        System.out.println("12. Your Profile");
+        System.out.println("13. Logout");
         System.out.print("Choose an option: ");
     }
 
@@ -75,19 +77,18 @@ public class UserDashboard extends Dashboard {
                 searchBySongTitle();
                 return true;
             case 11:
+                showAllSongs();
+                return true;
+            case 12:
+                user.displayAccountInfo();
+                return true;
+            case 13:
                 System.out.println("Logging out...");
                 return false;
             default:
                 System.out.println("Invalid choice. Try again.");
                 return true;
         }
-    }
-
-    private void followArtist() {
-        System.out.print("Enter artist's username: ");
-        String artistUsername = scanner.nextLine();
-        Artist artist = new Artist(artistUsername, "", "", "", 0);  // Fake artist object
-        user.followArtist(artist);
     }
 
     private void viewLyricsOfSong() {
@@ -173,7 +174,11 @@ public class UserDashboard extends Dashboard {
                 System.out.println("Release Date: " + selectedSong.getReleaseDate());
                 System.out.println("Genre: " + selectedSong.getGenre());
                 System.out.println("Views: " + selectedSong.getViewsCount());
-                System.out.println("Lyrics:\n" + selectedSong.getLyrics());
+                System.out.println("Lyrics: " + selectedSong.getLyrics());
+                System.out.println(("like: "+selectedSong.getLikesCount()));
+                System.out.println(("dislike: "+selectedSong.getDislikesCount()));
+                System.out.println("Comments\n: "+selectedSong.getComments());
+
             }
         }
     }

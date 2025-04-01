@@ -3,6 +3,7 @@ package org.NowruzProject.Dashboards;
 import org.NowruzProject.Accounts.Account;
 import org.NowruzProject.Accounts.User;
 import org.NowruzProject.Accounts.Artist;
+import org.NowruzProject.Comments.Comment;
 import org.NowruzProject.Music.Genre;
 import org.NowruzProject.Music.MusicManager;
 import org.NowruzProject.Search;
@@ -10,6 +11,7 @@ import org.NowruzProject.Music.Song;
 import org.NowruzProject.Music.Album;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class ArtistDashboard extends Dashboard {
     private Artist artist;
@@ -31,7 +33,8 @@ public class ArtistDashboard extends Dashboard {
         System.out.println("7. Edit Song Lyrics");
         System.out.println("8. Set Active Status");
         System.out.println("9. View Lyrics Change Requests");
-        System.out.println("10. Logout");
+        System.out.println("10. Your Profile");
+        System.out.println("11. Logout");
         System.out.print("Choose an option: ");
     }
 
@@ -45,6 +48,23 @@ public class ArtistDashboard extends Dashboard {
                 String releaseDate = scanner.nextLine();
                 System.out.print("Enter album title (optional, press Enter to skip): ");
                 String albumTitle = scanner.nextLine();
+                Album album = null;
+
+                if (!albumTitle.isEmpty()) {
+                    // Search in album list
+                    for (Album existingAlbum : artist.getAlbums()) {
+                        if (existingAlbum.getTitle().equalsIgnoreCase(albumTitle)) {
+                            album = existingAlbum;
+                            break;
+                        }
+                    }
+
+                    // if the album not find
+                    if (album == null) {
+                        album = new Album(albumTitle, releaseDate, artist);
+                        artist.addAlbum(album);
+                    }
+                }
 
 
                 // get the genre
@@ -117,11 +137,6 @@ public class ArtistDashboard extends Dashboard {
                         break;
                 }
 
-                // Create New album
-                Album album = null;
-                if (!albumTitle.isEmpty()) {
-                    album = new Album(albumTitle, releaseDate, artist);
-                }
 
                 // Create new Song
                 Song newSong = new Song(songTitle, artist, releaseDate, album, genre, 0, new ArrayList<>());
@@ -131,13 +146,46 @@ public class ArtistDashboard extends Dashboard {
                 System.out.print("Enter lyrics for the song: ");
                 String lyrics = scanner.nextLine();
                 newSong.setLyrics(lyrics);
-
-                System.out.println("Song with lyrics added successfully!");
+                if(artist.isApproved()) {
+                    System.out.println("Song with lyrics added successfully!");
+                }
+                else {
+                    System.out.println("You must be approved by an admin to release albums.");
+                }
 
                 return true;
             case 2:
-                artist.showSongs();
+                artist.showSongs(); //Songs list
+                if (!artist.getSongs().isEmpty()) { // if song is available
+                    System.out.print("Enter the song title to see details (or press Enter to skip): ");
+                    String selectedSongTitle = scanner.nextLine().trim();
+
+                    if (!selectedSongTitle.isEmpty()) {
+                        Song selectedSong = artist.findSong(selectedSongTitle);
+                        if (selectedSong != null) {
+                            System.out.println("\n=== Song Details ===");
+                            System.out.println("Title: " + selectedSong.getTitle());
+                            System.out.println("Album: " + (selectedSong.getAlbum() != null ? selectedSong.getAlbum().getTitle() : "No album"));
+                            System.out.println("Genre: " + selectedSong.getGenre());
+                            System.out.println("Release Date: " + selectedSong.getReleaseDate());
+                            System.out.println("Likes: " + selectedSong.getLikesCount());
+                            System.out.println("Dislikes: " + selectedSong.getDislikesCount());
+
+                            System.out.println("\nComments:");
+                            if (selectedSong.getComments().isEmpty()) {
+                                System.out.println("No comments available.");
+                            } else {
+                                for (Comment comment : selectedSong.getComments()) {
+                                    System.out.println("- " + comment);
+                                }
+                            }
+                        } else {
+                            System.out.println("Song not found.");
+                        }
+                    }
+                }
                 return true;
+
             case 3:
                 artist.viewAlbums();
                 return true;
@@ -208,8 +256,10 @@ public class ArtistDashboard extends Dashboard {
                 }
                 return true;
 
-
             case 10:
+                artist.showArtistInfo();
+                return true;
+            case 11:
                 System.out.println("Logging out...");
                 return false;
 

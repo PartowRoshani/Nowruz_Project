@@ -3,10 +3,8 @@ package org.NowruzProject.Accounts;
 import org.NowruzProject.Accounts.AccountType;
 import org.NowruzProject.Music.Song;
 import org.NowruzProject.Music.Album;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 public class Artist extends Account {
     private List<Song> songs;  // the list of artist's music
@@ -24,10 +22,31 @@ public class Artist extends Account {
 
     }
 
+    //Method for popular songs
+    public List<Song> getPopularSongs(int count) {
+        if (songs.isEmpty()) {
+            System.out.println("No songs available for this artist.");
+            return Collections.emptyList();
+        }
+
+        // sort music based on likes
+        songs.sort(Comparator.comparingInt(Song::getLikesCount).reversed());
+
+        // show some of the songs
+        return songs.subList(0, Math.min(count, songs.size()));
+    }
+
+
     // Method for add a song
     public void addSong(Song song) {
-        songs.add(song);
-        System.out.println("Song " + song.getTitle() + " added by " + getUsername());
+        if (!approved) {
+            System.out.println("You must be approved by an admin to add songs.");
+            return;
+        }
+        else {
+            songs.add(song);
+            System.out.println("Song " + song.getTitle() + " added by " + getUsername());
+        }
     }
 
 
@@ -38,8 +57,15 @@ public class Artist extends Account {
 
     // Method for add an album
     public void addAlbum(Album albumName) {
-        albums.add(albumName);
-        System.out.println(getUsername() + " released a new album: " + albumName);
+        if (!approved) {
+            System.out.println("You must be approved by an admin to release albums.");
+            return;
+        }
+        else {
+            albums.add(albumName);
+            System.out.println(getUsername() + " released a new album: " + albumName.getTitle());
+        }
+
     }
 
     //Method for remove songs or album
@@ -61,7 +87,8 @@ public class Artist extends Account {
             System.out.println("No songs available.");
         } else {
             for (Song song : songs) {
-                System.out.println("- " + song.getTitle() + " (Released: " + song.getReleaseDate() + ", Genre: " + song.getGenre() + ")");
+                System.out.println("- " + song.getTitle() + " (Released: " + song.getReleaseDate() + ", Genre: " + song.getGenre() + ", Album: " + (song.getAlbum() != null ? song.getAlbum().getTitle() : "No album")
+                        +")" );
             }
         }
     }
@@ -134,6 +161,17 @@ public class Artist extends Account {
         System.out.println("Active: " + (isActive() ? "Yes" : "No"));
         System.out.println("Number of Songs: " + songs.size());
         System.out.println("Number of Albums: " + albums.size());
+        System.out.println("\n🔥 Popular Songs:");
+        List<Song> popularSongs = getPopularSongs(3);  // 3 top music
+
+        if (popularSongs.isEmpty()) {
+            System.out.println("No popular songs available.");
+        } else {
+            for (int i = 0; i < popularSongs.size(); i++) {
+                Song song = popularSongs.get(i);
+                System.out.println((i + 1) + ". " + song.getTitle() + " (Likes: " + song.getLikesCount() + ")");
+            }
+        }
     }
 
     // Method for approving or rejecting an edit request by the artist
@@ -146,7 +184,6 @@ public class Artist extends Account {
         }
         song.getEditRequests().remove(requestedChange); // Remove request
     }
-
 
 
 
