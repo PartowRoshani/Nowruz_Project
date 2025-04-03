@@ -42,115 +42,138 @@ public class ArtistDashboard extends Dashboard {
     protected boolean handleChoice(int choice) {
         switch (choice) {
             case 1:
-                System.out.print("Enter song title: ");
-                String songTitle = scanner.nextLine();
-                System.out.print("Enter release date: ");
-                String releaseDate = scanner.nextLine();
-                System.out.print("Enter album title (optional, press Enter to skip): ");
-                String albumTitle = scanner.nextLine();
-                Album album = null;
 
-                if (!albumTitle.isEmpty()) {
-                    // Search in album list
-                    for (Album existingAlbum : artist.getAlbums()) {
-                        if (existingAlbum.getTitle().equalsIgnoreCase(albumTitle)) {
-                            album = existingAlbum;
-                            break;
+                if(artist.isApproved()) {
+                    System.out.println("Song with lyrics added successfully!");
+                    System.out.print("Enter song title: ");
+                    String songTitle = scanner.nextLine();
+                    System.out.print("Enter release date: ");
+                    String releaseDate = scanner.nextLine();
+                    System.out.print("Enter album title (optional, press Enter to skip): ");
+                    String albumTitle = scanner.nextLine();
+                    Album album = null;
+
+                    if (!albumTitle.isEmpty()) {
+                        // Search in album list
+                        for (Album existingAlbum : artist.getAlbums()) {
+                            if (existingAlbum.getTitle().equalsIgnoreCase(albumTitle)) {
+                                album = existingAlbum;
+                                break;
+                            }
+                        }
+
+                        // if the album not find
+                        if (album == null) {
+                            album = new Album(albumTitle, releaseDate, artist);
+                            artist.addAlbum(album);
                         }
                     }
 
-                    // if the album not find
-                    if (album == null) {
-                        album = new Album(albumTitle, releaseDate, artist);
-                        artist.addAlbum(album);
+
+                    // get the genre
+                    System.out.println("Choose genre for the song:");
+                    System.out.println("1. Pop");
+                    System.out.println("2. Rock");
+                    System.out.println("3. Hip Hop");
+                    System.out.println("4. Jazz");
+                    System.out.println("5. Classical");
+                    System.out.println("6. Electronic ");
+                    System.out.println("7. Country");
+                    System.out.println("8. Blues");
+                    System.out.println("9. Reggae");
+                    System.out.println("10. Metal");
+                    System.out.println("11. RNB");
+                    System.out.println("12. Folk");
+                    System.out.println("13. Latin");
+                    System.out.println("14. Soul");
+
+                    System.out.print("Enter your choice: ");
+                    int genreChoice = Integer.parseInt(scanner.nextLine());
+                    Genre genre = null;
+
+                    switch (genreChoice) {
+                        case 1:
+                            genre = Genre.POP;
+                            break;
+                        case 2:
+                            genre = Genre.ROCK;
+                            break;
+                        case 3:
+                            genre = Genre.HIP_HOP;
+                            break;
+                        case 4:
+                            genre = Genre.JAZZ;
+                            break;
+                        case 5:
+                            genre = Genre.CLASSICAL;
+                            break;
+                        case 6 :
+                            genre = Genre.ELECTRONIC;
+                            break;
+                        case 7 :
+                            genre = Genre.COUNTRY;
+                            break;
+                        case 8 :
+                            genre = Genre.BLUES;
+                            break;
+                        case 9 :
+                            genre = Genre.REGGAE;
+                            break;
+                        case 10 :
+                            genre = Genre.METAL;
+                            break;
+                        case 11:
+                            genre = Genre.RNB;
+                            break;
+                        case 12 :
+                            genre = Genre.FOLK;
+                            break;
+                        case 13 :
+                            genre = Genre.LATIN;
+                            break;
+                        case 14 :
+                            genre = Genre.SOUL;
+                            break;
+                        default:
+                            System.out.println("Invalid genre. Defaulting to Pop.");
+                            genre = Genre.POP;
+                            break;
                     }
-                }
 
 
-                // get the genre
-                System.out.println("Choose genre for the song:");
-                System.out.println("1. Pop");
-                System.out.println("2. Rock");
-                System.out.println("3. Hip Hop");
-                System.out.println("4. Jazz");
-                System.out.println("5. Classical");
-                System.out.println("6. Electronic ");
-                System.out.println("7. Country");
-                System.out.println("8. Blues");
-                System.out.println("9. Reggae");
-                System.out.println("10. Metal");
-                System.out.println("11. RNB");
-                System.out.println("12. Folk");
-                System.out.println("13. Latin");
-                System.out.println("14. Soul");
+                    // Create new Song
+                    Song newSong = new Song(songTitle, artist, releaseDate, album, genre, 0, new ArrayList<>());
+                    artist.addSong(newSong);
+                    MusicManager.addSong(newSong);
 
-                System.out.print("Enter your choice: ");
-                int genreChoice = Integer.parseInt(scanner.nextLine());
-                Genre genre = null;
+                    System.out.print("Enter lyrics for the song: ");
+                    String lyrics = scanner.nextLine();
+                    newSong.setLyrics(lyrics);
+                    // Ask if the artist wants to add collaborators to the song
+                    System.out.print("Would you like to add a collaborator to this song? (yes/no): ");
+                    String collaboratorChoice = scanner.nextLine().trim().toLowerCase();
+                    if (collaboratorChoice.equals("yes")) {
+                        System.out.print("Enter collaborator's username: ");
+                        String collaboratorUsername = scanner.nextLine();
 
-                switch (genreChoice) {
-                    case 1:
-                        genre = Genre.POP;
-                        break;
-                    case 2:
-                        genre = Genre.ROCK;
-                        break;
-                    case 3:
-                        genre = Genre.HIP_HOP;
-                        break;
-                    case 4:
-                        genre = Genre.JAZZ;
-                        break;
-                    case 5:
-                        genre = Genre.CLASSICAL;
-                        break;
-                    case 6 :
-                        genre = Genre.ELECTRONIC;
-                        break;
-                    case 7 :
-                        genre = Genre.COUNTRY;
-                        break;
-                    case 8 :
-                        genre = Genre.BLUES;
-                        break;
-                    case 9 :
-                        genre = Genre.REGGAE;
-                        break;
-                    case 10 :
-                        genre = Genre.METAL;
-                        break;
-                    case 11:
-                        genre = Genre.RNB;
-                        break;
-                    case 12 :
-                        genre = Genre.FOLK;
-                        break;
-                    case 13 :
-                        genre = Genre.LATIN;
-                        break;
-                    case 14 :
-                        genre = Genre.SOUL;
-                        break;
-                    default:
-                        System.out.println("Invalid genre. Defaulting to Pop.");
-                        genre = Genre.POP;
-                        break;
-                }
+                        // Check if the collaborator exists in the system
+                        Artist collaborator = MusicManager.getArtistByUsername(collaboratorUsername);
+                        if (collaborator != null) {
+                            // Add the collaborator to the song's list of artists
+                            newSong.addCollaborator(collaborator);
 
+                            // Add the song to the collaborator's list of songs
+                            collaborator.addSong(newSong);
 
-                // Create new Song
-                Song newSong = new Song(songTitle, artist, releaseDate, album, genre, 0, new ArrayList<>());
-                artist.addSong(newSong);
-                MusicManager.addSong(newSong);
+                            System.out.println("Collaborator added successfully! Song also added to their list.");
+                        } else {
+                            System.out.println("Collaborator not found in the system.");
+                        }
+                    }
 
-                System.out.print("Enter lyrics for the song: ");
-                String lyrics = scanner.nextLine();
-                newSong.setLyrics(lyrics);
-                if(artist.isApproved()) {
-                    System.out.println("Song with lyrics added successfully!");
                 }
                 else {
-                    System.out.println("You must be approved by an admin to release albums.");
+                    System.out.println("You must be approved by an admin to release Song.");
                 }
 
                 return true;
@@ -171,17 +194,13 @@ public class ArtistDashboard extends Dashboard {
                             System.out.println("Likes: " + selectedSong.getLikesCount());
                             System.out.println("Dislikes: " + selectedSong.getDislikesCount());
 
-                            System.out.println("\nComments:");
-                            if (selectedSong.getComments().isEmpty()) {
-                                System.out.println("No comments available.");
-                            } else {
-                                for (Comment comment : selectedSong.getComments()) {
-                                    System.out.println("- " + comment);
-                                }
+                            System.out.println("\n=== Comments ===");
+                            selectedSong.displayComments();
+
+
                             }
                         } else {
                             System.out.println("Song not found.");
-                        }
                     }
                 }
                 return true;
@@ -190,11 +209,17 @@ public class ArtistDashboard extends Dashboard {
                 artist.viewAlbums();
                 return true;
             case 4:
-                System.out.print("Enter album title: ");
-                String newAlbumTitle = scanner.nextLine();
-                System.out.print("Enter release date: ");
-                String newAlbumReleaseDate = scanner.nextLine();
-                artist.addAlbum(new Album(newAlbumTitle, newAlbumReleaseDate, artist));
+               if (artist.isApproved())
+               {
+                   System.out.print("Enter album title: ");
+                   String newAlbumTitle = scanner.nextLine();
+                   System.out.print("Enter release date: ");
+                   String newAlbumReleaseDate = scanner.nextLine();
+                   artist.addAlbum(new Album(newAlbumTitle, newAlbumReleaseDate, artist));
+               }
+               else{
+                   System.out.println("You must be approved by an admin to release albums.");
+               }
                 return true;
             case 5 :
                 System.out.print("Enter song title to remove: ");

@@ -1,5 +1,6 @@
 package org.NowruzProject.Comments;
 
+import org.NowruzProject.Accounts.Artist;
 import org.NowruzProject.Accounts.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,6 +11,10 @@ public class Comment {
     private final String text;
     private final User user;
     private final LocalDateTime date;
+    private int likeCount;
+    private int dislikeCount;
+    private List<User> likedUsers;
+    private List<User> dislikedUsers;
 
     public Comment(String text, User user) {
         if (text == null || text.trim().isEmpty()) {
@@ -18,6 +23,10 @@ public class Comment {
         this.text = text;
         this.user = Objects.requireNonNull(user, "User cannot be null!");
         this.date = LocalDateTime.now();
+        this.likeCount = 0;
+        this.dislikeCount = 0;
+        this.likedUsers = new ArrayList<>();
+        this.dislikedUsers = new ArrayList<>();
     }
 
     //getters
@@ -32,6 +41,49 @@ public class Comment {
     public LocalDateTime getDate() {
         return date;
     }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public int getDislikeCount() {
+        return dislikeCount;
+    }
+
+
+    public void like(User user) {
+        if (likedUsers.contains(user)) {
+            System.out.println("You have already liked this comment.");
+        } else {
+            likedUsers.add(user);
+            likeCount++;
+
+            // اگر قبلاً دیس‌لایک کرده بود، دیس‌لایک را حذف کن
+            if (dislikedUsers.contains(user)) {
+                dislikedUsers.remove(user);
+                dislikeCount--;
+            }
+            System.out.println(user.getUsername() + " liked this comment.");
+        }
+    }
+
+    public void dislike(User user) {
+        if (dislikedUsers.contains(user)) {
+            System.out.println("You have already disliked this comment.");
+        } else {
+            dislikedUsers.add(user);
+            dislikeCount++;
+
+            // اگر قبلاً لایک کرده بود، لایک را حذف کن
+            if (likedUsers.contains(user)) {
+                likedUsers.remove(user);
+                likeCount--;
+            }
+            System.out.println(user.getUsername() + " disliked this comment.");
+        }
+    }
+
+
 
     @Override
     public String toString() {

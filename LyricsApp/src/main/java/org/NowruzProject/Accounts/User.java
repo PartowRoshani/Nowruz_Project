@@ -53,6 +53,31 @@ public class User extends Account {
         }
     }
 
+    public void showNewSongsFromFollowedArtists() {
+        System.out.println("\n=== New Songs from Followed Artists ===");
+        boolean foundNewSong = false;
+
+        for (Artist artist : followingArtists) {
+            List<Song> songs = artist.getSongs();
+            int totalSongs = songs.size();
+
+            // if artist has more than 1 music
+            if (totalSongs > 1) {
+                Song latestSong = songs.get(totalSongs - 1);
+                Song secondLatestSong = songs.get(totalSongs - 2);
+
+                System.out.println("- " + latestSong.getTitle() + " by " + artist.getUsername() + " (Released: " + latestSong.getReleaseDate() + ")");
+                System.out.println("- " + secondLatestSong.getTitle() + " by " + artist.getUsername() + " (Released: " + secondLatestSong.getReleaseDate() + ")");
+                foundNewSong = true;
+            }
+        }
+
+        if (!foundNewSong) {
+            System.out.println("No new songs from followed artists.");
+        }
+    }
+
+
     //View the lyrics of  music
     public void viewLyrics(Song song) {
         System.out.println("Lyrics for " + song.getTitle() + ":");

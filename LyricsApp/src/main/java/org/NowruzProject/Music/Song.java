@@ -21,6 +21,7 @@ public class Song {
     private final Genre genre;
     private int viewsCount;
     private final List<String> tags;
+    private List<Artist> collaborators;
 
     // constructor
     public Song(String title, Artist artist, String releaseDate, Album album, Genre genre, int viewsCount, List<String> tags) {
@@ -36,6 +37,7 @@ public class Song {
         this.likedBy = new ArrayList<>();
         this.dislikedBy = new ArrayList<>();
         this.editRequests = new ArrayList<>();
+        this.collaborators = new ArrayList<>();
     }
 
     // Method for set the lyrics
@@ -63,6 +65,22 @@ public class Song {
         return List.copyOf(tags);
     }
 
+    //collaborators getter
+    public List<Artist> getCollaborators() {
+        return collaborators;
+    }
+
+    public void addCollaborator(Artist collaborator) {
+        if (!collaborators.contains(collaborator)) {
+            collaborators.add(collaborator);
+            collaborator.addSong(this);  // Add music to collaborator's song list
+            System.out.println(collaborator.getUsername() + " added as a collaborator on song: " + this.title);
+        } else {
+            System.out.println(collaborator.getUsername() + " is already a collaborator on this song.");
+        }
+    }
+
+
 
     // Method for send the edit requests
     public void addLyricsEditRequest(User user, String newLyrics) {
@@ -88,7 +106,7 @@ public class Song {
 
     // Method for add comments
     public void addComment(User user, String text) {
-        comments.add(new Comment(text, user));
+        comments.add(new Comment(text, user ));
         System.out.println("Comment added by " + user.getUsername() + " to " + title);
     }
 
@@ -125,6 +143,23 @@ public class Song {
     public List<String> getEditRequests() {
         return new ArrayList<>(editRequests);  // Send a copy
     }
+
+    public void displayComments() {
+        System.out.println("Comments for song: " + this.title);
+        if (comments.isEmpty()) {
+            System.out.println("No comments yet.");
+        } else {
+            int i = 1;
+            for (Comment comment : comments) {
+
+                System.out.println(i+" - " + comment.getUser().getUsername() + ": " + comment.getText());
+                System.out.println("  👍 " + comment.getLikeCount() + " | 👎 " + comment.getDislikeCount());
+                i++;
+            }
+
+        }
+    }
+
 
     //count likes and dislikes
     public int getLikesCount() {

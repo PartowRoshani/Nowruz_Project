@@ -2,11 +2,13 @@ package org.NowruzProject.Dashboards;
 
 import org.NowruzProject.Accounts.User;
 import org.NowruzProject.Accounts.Artist;
+import org.NowruzProject.Comments.Comment;
 import org.NowruzProject.Music.MusicManager;
 import org.NowruzProject.Music.Song;
 import org.NowruzProject.Music.Album;
 import org.NowruzProject.Search;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDashboard extends Dashboard {
@@ -36,7 +38,9 @@ public class UserDashboard extends Dashboard {
         System.out.println("10. Search for Songs");
         System.out.println("11. View all songs in the app");
         System.out.println("12. Your Profile");
-        System.out.println("13. Logout");
+        System.out.println("13. New Music");
+        System.out.println("14. Top 5 Music");
+        System.out.println("15. Logout");
         System.out.print("Choose an option: ");
     }
 
@@ -83,6 +87,12 @@ public class UserDashboard extends Dashboard {
                 user.displayAccountInfo();
                 return true;
             case 13:
+                user.showNewSongsFromFollowedArtists();
+                return true;
+            case 14:
+                showTop5Songs();
+                return true;
+            case 15:
                 System.out.println("Logging out...");
                 return false;
             default:
@@ -90,6 +100,27 @@ public class UserDashboard extends Dashboard {
                 return true;
         }
     }
+
+    public void showTop5Songs() {
+        List<Song> allSongs = new ArrayList<>();
+
+        //all songs from all artists
+        for (Artist artist : Artist.getAllArtists()) {
+            allSongs.addAll(artist.getSongs());
+        }
+
+        // sorting by View
+        allSongs.sort((song1, song2) -> Integer.compare(song2.getViewsCount(), song1.getViewsCount()));
+
+        // Show top 5 music
+        System.out.println("\n=== Top 5 Most Viewed Songs ===");
+        int count = Math.min(5, allSongs.size()); // if we have less music
+        for (int i = 0; i < count; i++) {
+            Song song = allSongs.get(i);
+            System.out.println((i + 1) + ". " + song.getTitle() + " by " + song.getArtist().getUsername() + " (Views: " + song.getViewsCount() + ")");
+        }
+    }
+
 
     private void viewLyricsOfSong() {
         System.out.print("Enter song title: ");
@@ -177,7 +208,50 @@ public class UserDashboard extends Dashboard {
                 System.out.println("Lyrics: " + selectedSong.getLyrics());
                 System.out.println(("like: "+selectedSong.getLikesCount()));
                 System.out.println(("dislike: "+selectedSong.getDislikesCount()));
-                System.out.println("Comments\n: "+selectedSong.getComments());
+                System.out.println("\n=== Comments ===");
+                selectedSong.displayComments();
+
+                //loop for like/dislike comments
+                while (true) {
+                    System.out.print("Do you want to like/dislike a comment? (yes/no): ");
+                    String response = scanner.nextLine().trim().toLowerCase();
+
+                    if (response.equals("no")) {
+                        break;
+                    } else if (response.equals("yes")) {
+                        System.out.println("\n=== Comments ===");
+                        selectedSong.displayComments(); // show comments after like/dislike
+
+                        System.out.print("Enter the number of the comment: ");
+                        int commentIndex = Integer.parseInt(scanner.nextLine()) - 1;
+
+                        if (commentIndex >= 0 && commentIndex < selectedSong.getComments().size()) {
+                            System.out.print("Do you want to like or dislike? (like/dislike): ");
+                            String action = scanner.nextLine().trim().toLowerCase();
+
+                            Comment comment = selectedSong.getComments().get(commentIndex);
+
+                            if (action.equals("like")) {
+                                comment.like(user);
+                                System.out.println("You liked the comment.");
+                            } else if (action.equals("dislike")) {
+                                comment.dislike(user);
+                                System.out.println("You disliked the comment.");
+                            } else {
+                                System.out.println("Invalid choice. Try again.");
+                            }
+
+                            // Show updated comments
+                            System.out.println("\nUpdated Comments:");
+                            selectedSong.displayComments();
+                        } else {
+                            System.out.println("Invalid comment number. Try again.");
+                        }
+                    } else {
+                        System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                    }
+                }
+
 
             }
         }
@@ -199,6 +273,51 @@ public class UserDashboard extends Dashboard {
             System.out.println("Genre: " + song.getGenre());
             System.out.println("Views: " + song.getViewsCount());
             System.out.println("Lyrics:\n" + song.getLyrics());
+            System.out.println(("like: " + song.getLikesCount()));
+            System.out.println(("dislike: " + song.getDislikesCount()));
+            System.out.println("\n=== Comments ===");
+            song.displayComments();
+
+            //loop for like/dislike comments
+            while (true) {
+                System.out.print("Do you want to like/dislike a comment? (yes/no): ");
+                String response = scanner.nextLine().trim().toLowerCase();
+
+                if (response.equals("no")) {
+                    break;
+                } else if (response.equals("yes")) {
+                    System.out.println("\n=== Comments ===");
+                    song.displayComments(); // show comments after like/dislike
+
+                    System.out.print("Enter the number of the comment: ");
+                    int commentIndex = Integer.parseInt(scanner.nextLine()) - 1;
+
+                    if (commentIndex >= 0 && commentIndex < song.getComments().size()) {
+                        System.out.print("Do you want to like or dislike? (like/dislike): ");
+                        String action = scanner.nextLine().trim().toLowerCase();
+
+                        Comment comment = song.getComments().get(commentIndex);
+
+                        if (action.equals("like")) {
+                            comment.like(user);
+                            System.out.println("You liked the comment.");
+                        } else if (action.equals("dislike")) {
+                            comment.dislike(user);
+                            System.out.println("You disliked the comment.");
+                        } else {
+                            System.out.println("Invalid choice. Try again.");
+                        }
+
+                        // Show updated comments
+                        System.out.println("\nUpdated Comments:");
+                        song.displayComments();
+                    } else {
+                        System.out.println("Invalid comment number. Try again.");
+                    }
+                } else {
+                    System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                }
+            }
         }
     }
 
