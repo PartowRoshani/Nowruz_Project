@@ -1,18 +1,23 @@
 package org.NowruzProject.Accounts;
 
-import org.NowruzProject.Accounts.AccountType;
 import org.NowruzProject.Music.Song;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+
+import java.util.*;
 
 public class User extends Account {
-    private final List<Artist> followingArtists;  // Artist list
+    private final List<Artist> followingArtists;// Artist list
+    private final int MAX_HISTORY = 5;
+    private LinkedList<Song> viewHistory = new LinkedList<>();
 
     public User(String username, String password, String email, String fullName, int age) {
         super(username, password, email, fullName, age, AccountType.USER);
         this.followingArtists = new ArrayList<>();
     }
+
+
+
+
+
 
     // Method for follow artists
     public void followArtist(Artist artist) {
@@ -127,4 +132,22 @@ public class User extends Account {
             System.out.println("No suggestions available.");
         }
     }
+
+
+
+    //add to history
+    public void addToHistory(Song song) {
+        viewHistory.remove(song); // if visited before , remove it and add it at first
+        viewHistory.addFirst(song); //
+
+        if (viewHistory.size() > MAX_HISTORY) {
+            viewHistory.removeLast(); // if it's more than 5 remove the last one
+        }
+    }
+
+    // history getter
+    public List<Song> getViewHistory() {
+        return Collections.unmodifiableList(viewHistory); // users cant change this list by themselves
+    }
+
 }

@@ -2,6 +2,8 @@ package org.NowruzProject.Dashboards;
 
 import org.NowruzProject.Accounts.User;
 import org.NowruzProject.Accounts.Artist;
+import org.NowruzProject.AnswerAndQuestion.Question;
+import org.NowruzProject.AnswerAndQuestion.QuestionManager;
 import org.NowruzProject.Comments.Comment;
 import org.NowruzProject.Music.MusicManager;
 import org.NowruzProject.Music.Song;
@@ -15,12 +17,16 @@ public class UserDashboard extends Dashboard {
     private User user;
     private Search search;
     private List<Song> songs; // list of songs
+    private QuestionManager questionManager;
 
-    public UserDashboard(User user, List<Artist> artists, List<Song> songs, List<Album> albums) {
+
+    public UserDashboard(User user, List<Artist> artists, List<Song> songs, List<Album> albums,QuestionManager questionManager) {
         super(user);
         this.user = user;
         this.songs = songs;
         this.search = new Search(artists, songs, albums);
+        this.questionManager = questionManager;
+
     }
 
     @Override
@@ -40,7 +46,10 @@ public class UserDashboard extends Dashboard {
         System.out.println("12. Your Profile");
         System.out.println("13. New Music");
         System.out.println("14. Top 5 Music");
-        System.out.println("15. Logout");
+        System.out.println("15. Ask a Question about a Song");
+        System.out.println("16. View Questions and Answers");
+        System.out.println("17. Recent Search");
+        System.out.println("18. Logout");
         System.out.print("Choose an option: ");
     }
 
@@ -79,6 +88,7 @@ public class UserDashboard extends Dashboard {
                 return true;
             case 10:
                 searchBySongTitle();
+
                 return true;
             case 11:
                 showAllSongs();
@@ -93,6 +103,53 @@ public class UserDashboard extends Dashboard {
                 showTop5Songs();
                 return true;
             case 15:
+
+                System.out.print("Enter song title: ");
+                String songTitle = scanner.nextLine();
+                Song selectedSong = findSongByTitle(songTitle);
+                if (selectedSong != null) {
+                    System.out.print("Enter your question: ");
+                    String questionText = scanner.nextLine();
+                    Question question = new Question(questionText, user, selectedSong);
+                    questionManager.addQuestion(question);
+                    System.out.println("Your question has been added.");
+                } else {
+                    System.out.println("Song not found.");
+                }
+                return true;
+            case 16:
+                System.out.print("Enter song title: ");
+                songTitle = scanner.nextLine();
+                selectedSong = findSongByTitle(songTitle);
+                if (selectedSong != null) {
+                    questionManager.displayQuestionsForSong(selectedSong);
+                    System.out.print("Enter the number of a question to view details (or 0 to exit): ");
+                    int questionIndex = scanner.nextInt() - 1;
+                    scanner.nextLine();
+                    if (questionIndex >= 0) {
+                        Question selectedQuestion = questionManager.getQuestion(questionIndex);
+                        if (selectedQuestion != null) {
+                            selectedQuestion.displayQuestion();
+                        } else {
+                            System.out.println("Invalid question number.");
+                        }
+                    }
+                } else {
+                    System.out.println("Song not found.");
+                }
+                return true;
+            case 17:
+                List<Song> history = user.getViewHistory();
+                if (history.isEmpty()) {
+                    System.out.println("No history available.");
+                } else {
+                    System.out.println("Last 5 visited songs:");
+                    for (Song s : history) {
+                        System.out.println("- " + s.getTitle() + " by " + s.getArtist().getFullName());
+                    }
+                }
+                return true;
+            case 18:
                 System.out.println("Logging out...");
                 return false;
             default:
@@ -128,6 +185,9 @@ public class UserDashboard extends Dashboard {
         Song song = findSongByTitle(songTitle);
         if (song != null) {
             user.viewLyrics(song);
+            user.addToHistory(song);
+
+
         } else {
             System.out.println("Song not found.");
         }
@@ -165,6 +225,7 @@ public class UserDashboard extends Dashboard {
         Song song = findSongByTitle(songTitle);
         if (song != null) {
             user.likeSong(song);
+
         } else {
             System.out.println("Song not found.");
         }
@@ -198,6 +259,7 @@ public class UserDashboard extends Dashboard {
             int choice = Integer.parseInt(scanner.nextLine());
             if (choice > 0 && choice <= songs.size()) {
                 Song selectedSong = songs.get(choice - 1);
+                user.addToHistory(selectedSong);
                 selectedSong.increaseViewCount();
                 System.out.println("\n=== Song Details ===");
                 System.out.println("Title: " + selectedSong.getTitle());
@@ -210,6 +272,7 @@ public class UserDashboard extends Dashboard {
                 System.out.println(("dislike: "+selectedSong.getDislikesCount()));
                 System.out.println("\n=== Comments ===");
                 selectedSong.displayComments();
+                user.addToHistory(selectedSong);
 
                 //loop for like/dislike comments
                 while (true) {
@@ -265,6 +328,7 @@ public class UserDashboard extends Dashboard {
         if (song == null) {
             System.out.println("No song found with this title.");
         } else {
+            user.addToHistory(song);
             song.increaseViewCount();
             System.out.println("\n=== Song Details ===");
             System.out.println("Title: " + song.getTitle());
@@ -336,4 +400,8 @@ public class UserDashboard extends Dashboard {
             }
         }
     }
+
+
+
+
 }

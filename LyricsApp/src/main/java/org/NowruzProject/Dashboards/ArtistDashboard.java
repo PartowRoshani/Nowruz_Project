@@ -3,6 +3,9 @@ package org.NowruzProject.Dashboards;
 import org.NowruzProject.Accounts.Account;
 import org.NowruzProject.Accounts.User;
 import org.NowruzProject.Accounts.Artist;
+import org.NowruzProject.AnswerAndQuestion.Answer;
+import org.NowruzProject.AnswerAndQuestion.Question;
+import org.NowruzProject.AnswerAndQuestion.QuestionManager;
 import org.NowruzProject.Comments.Comment;
 import org.NowruzProject.Music.Genre;
 import org.NowruzProject.Music.MusicManager;
@@ -13,8 +16,12 @@ import org.NowruzProject.Music.Album;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static org.NowruzProject.Music.MusicManager.findSongByTitle;
+
 public class ArtistDashboard extends Dashboard {
     private Artist artist;
+    private QuestionManager questionManager;
+
 
     public ArtistDashboard(Artist artist) {
         super(artist);
@@ -34,7 +41,8 @@ public class ArtistDashboard extends Dashboard {
         System.out.println("8. Set Active Status");
         System.out.println("9. View Lyrics Change Requests");
         System.out.println("10. Your Profile");
-        System.out.println("11. Logout");
+        System.out.println("11. Answer a Question about a Song");
+        System.out.println("12. Logout");
         System.out.print("Choose an option: ");
     }
 
@@ -43,10 +51,11 @@ public class ArtistDashboard extends Dashboard {
         switch (choice) {
             case 1:
 
-                if(artist.isApproved()) {
+                String songTitle;
+                if (artist.isApproved()) {
                     System.out.println("Song with lyrics added successfully!");
                     System.out.print("Enter song title: ");
-                    String songTitle = scanner.nextLine();
+                    songTitle = scanner.nextLine();
                     System.out.print("Enter release date: ");
                     String releaseDate = scanner.nextLine();
                     System.out.print("Enter album title (optional, press Enter to skip): ");
@@ -107,31 +116,31 @@ public class ArtistDashboard extends Dashboard {
                         case 5:
                             genre = Genre.CLASSICAL;
                             break;
-                        case 6 :
+                        case 6:
                             genre = Genre.ELECTRONIC;
                             break;
-                        case 7 :
+                        case 7:
                             genre = Genre.COUNTRY;
                             break;
-                        case 8 :
+                        case 8:
                             genre = Genre.BLUES;
                             break;
-                        case 9 :
+                        case 9:
                             genre = Genre.REGGAE;
                             break;
-                        case 10 :
+                        case 10:
                             genre = Genre.METAL;
                             break;
                         case 11:
                             genre = Genre.RNB;
                             break;
-                        case 12 :
+                        case 12:
                             genre = Genre.FOLK;
                             break;
-                        case 13 :
+                        case 13:
                             genre = Genre.LATIN;
                             break;
-                        case 14 :
+                        case 14:
                             genre = Genre.SOUL;
                             break;
                         default:
@@ -171,20 +180,20 @@ public class ArtistDashboard extends Dashboard {
                         }
                     }
 
-                }
-                else {
+                } else {
                     System.out.println("You must be approved by an admin to release Song.");
                 }
 
                 return true;
             case 2:
                 artist.showSongs(); //Songs list
+                Song selectedSong;
                 if (!artist.getSongs().isEmpty()) { // if song is available
                     System.out.print("Enter the song title to see details (or press Enter to skip): ");
                     String selectedSongTitle = scanner.nextLine().trim();
 
                     if (!selectedSongTitle.isEmpty()) {
-                        Song selectedSong = artist.findSong(selectedSongTitle);
+                        selectedSong = artist.findSong(selectedSongTitle);
                         if (selectedSong != null) {
                             System.out.println("\n=== Song Details ===");
                             System.out.println("Title: " + selectedSong.getTitle());
@@ -198,9 +207,9 @@ public class ArtistDashboard extends Dashboard {
                             selectedSong.displayComments();
 
 
-                            }
-                        } else {
-                            System.out.println("Song not found.");
+                        }
+                    } else {
+                        System.out.println("Song not found.");
                     }
                 }
                 return true;
@@ -209,19 +218,17 @@ public class ArtistDashboard extends Dashboard {
                 artist.viewAlbums();
                 return true;
             case 4:
-               if (artist.isApproved())
-               {
-                   System.out.print("Enter album title: ");
-                   String newAlbumTitle = scanner.nextLine();
-                   System.out.print("Enter release date: ");
-                   String newAlbumReleaseDate = scanner.nextLine();
-                   artist.addAlbum(new Album(newAlbumTitle, newAlbumReleaseDate, artist));
-               }
-               else{
-                   System.out.println("You must be approved by an admin to release albums.");
-               }
+                if (artist.isApproved()) {
+                    System.out.print("Enter album title: ");
+                    String newAlbumTitle = scanner.nextLine();
+                    System.out.print("Enter release date: ");
+                    String newAlbumReleaseDate = scanner.nextLine();
+                    artist.addAlbum(new Album(newAlbumTitle, newAlbumReleaseDate, artist));
+                } else {
+                    System.out.println("You must be approved by an admin to release albums.");
+                }
                 return true;
-            case 5 :
+            case 5:
                 System.out.print("Enter song title to remove: ");
                 String removeSongTitle = scanner.nextLine();
                 Song songToRemove = artist.findSong(removeSongTitle);
@@ -236,7 +243,7 @@ public class ArtistDashboard extends Dashboard {
                 String removeAlbumTitle = scanner.nextLine();
                 artist.removeAlbum(removeAlbumTitle);
                 return true;
-            case 7 :
+            case 7:
                 System.out.print("Enter song title to edit: ");
                 String editSongTitle = scanner.nextLine();
                 Song songToEdit = artist.findSong(editSongTitle);
@@ -285,6 +292,58 @@ public class ArtistDashboard extends Dashboard {
                 artist.showArtistInfo();
                 return true;
             case 11:
+                System.out.print("Enter song title: ");
+                songTitle = scanner.nextLine();
+                selectedSong = findSongByTitle(songTitle);
+                //check for null or not
+                if (selectedSong == null) {
+                    System.out.println("Song not found.");
+                    return true;
+                }
+                //show questions list
+                questionManager.displayQuestionsForSong(selectedSong);
+
+
+                // input is number or not
+                System.out.print("Enter the number of the question you want to answer: ");
+                if (!scanner.hasNextInt()) {
+                    System.out.println("Invalid input. Please enter a valid question number.");
+                    scanner.nextLine(); //delete incorrect input
+                    return true;
+                }
+
+                int questionIndex = scanner.nextInt() - 1;
+                scanner.nextLine();
+
+                //index is available or not
+                if (questionIndex < 0 || questionIndex >= questionManager.getQuestionCount()) {
+                    System.out.println("Invalid question number.");
+                    return true;
+                }
+                //get chosen question
+                Question selectedQuestion = questionManager.getQuestion(questionIndex);
+                if (selectedQuestion == null) {
+                    System.out.println("Invalid question selection.");
+                    return true;
+                }
+
+                //answer
+                System.out.print("Enter your answer: ");
+                String answerText = scanner.nextLine();
+
+                //check is answer null or not
+                if (answerText.trim().isEmpty()) {
+                    System.out.println("Answer cannot be empty.");
+                    return true;
+                }
+                //add answer to question
+                Answer answer = new Answer(answerText, artist);
+                selectedQuestion.addAnswer(answer);
+                System.out.println("Your answer has been added!");
+
+                return true;
+
+            case 12:
                 System.out.println("Logging out...");
                 return false;
 

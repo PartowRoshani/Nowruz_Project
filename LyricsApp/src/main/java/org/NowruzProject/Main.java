@@ -5,15 +5,19 @@ import org.NowruzProject.Accounts.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import org.NowruzProject.AnswerAndQuestion.QuestionManager;
 import org.NowruzProject.Dashboards.AdminDashboard;
 import org.NowruzProject.Dashboards.ArtistDashboard;
 import org.NowruzProject.Dashboards.Dashboard;
 import org.NowruzProject.Dashboards.UserDashboard;
 import org.NowruzProject.Music.Album;
 import org.NowruzProject.Music.Song;
+import org.NowruzProject.AnswerAndQuestion.QuestionManager;
 
 public class Main {
 
+    static QuestionManager questionManager = new QuestionManager();
     static List<Artist> artists = new ArrayList<>();
     static List<Song> songs = new ArrayList<>();
     static List<Album> albums = new ArrayList<>();
@@ -91,7 +95,7 @@ public class Main {
 
     public static Dashboard createDashboard(Account account) {
         if (account instanceof User) {
-            return new UserDashboard((User) account , artists, songs, albums);
+            return new UserDashboard((User) account, artists, songs, albums, questionManager);
         } else if (account instanceof Artist) {
             return new ArtistDashboard((Artist) account);
         } else if (account instanceof Admin) {
