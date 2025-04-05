@@ -3,6 +3,9 @@ package org.NowruzProject.Accounts;
 import java.util.*;
 import java.util.regex.*; //check for valid password and email
 
+import static org.NowruzProject.ColoredOutput.GREEN;
+import static org.NowruzProject.ColoredOutput.RED;
+
 public class AccountManager {
     private Map<String, Account> accounts; // Save accounts by username
 
@@ -30,19 +33,19 @@ public class AccountManager {
     public boolean register(String username, String password, String email, String fullName , int age ,String accountType) {
         //check username
         if (accounts.containsKey(username)) {
-            System.out.println("This username is already exist");
+            System.out.println(RED+"This username is already exist");
             return false;
         }
 
         // validity of email
         if (!isValidEmail(email)) {
-            System.out.println("Email is not available");
+            System.out.println(RED+"Email is not available");
             return false;
         }
 
         // validity of password
         if (!isValidPassword(password)) {
-            System.out.println("Username should be at least 8 characters with numbers and {!,@,#,$,%,%,^,&,*} ");
+            System.out.println(RED+"Username should be at least 8 characters with numbers and {!,@,#,$,%,%,^,&,*} ");
             return false;
         }
 
@@ -59,12 +62,12 @@ public class AccountManager {
                 newAccount = new Admin(username, password, email, fullName, age);
                 break;
             default:
-                System.out.println("Account type is not exist");
+                System.out.println(RED+"Account type is not exist");
                 return false;
         }
 
         accounts.put(username, newAccount);
-        System.out.println("Sign in is complete : " + username);
+        System.out.println(GREEN+"Sign in is complete : " + username);
         return true;
     }
 
@@ -72,10 +75,10 @@ public class AccountManager {
     public Account login(String username, String password) {
         Account account = accounts.get(username);
         if (account != null && account.getPassword().equals(password)) {
-            System.out.println("Sign in successfully : " + username);
+            System.out.println(GREEN+"Sign in successfully : " + username);
             return account;
         } else {
-            System.out.println("Username or password is incorrect");
+            System.out.println(RED+"Username or password is incorrect");
             return null;
         }
     }
@@ -83,9 +86,9 @@ public class AccountManager {
     // logout
     public void logout(Account account) {
         if (account != null) {
-            System.out.println("Logout successfully : " + account.getUsername());
+            System.out.println(GREEN+"Logout successfully : " + account.getUsername());
         } else {
-            System.out.println("You haven't logged in");
+            System.out.println(RED+"You haven't logged in");
         }
     }
 

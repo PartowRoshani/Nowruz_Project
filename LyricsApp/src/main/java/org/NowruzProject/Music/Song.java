@@ -20,18 +20,16 @@ public class Song {
     private final Album album;
     private final Genre genre;
     private int viewsCount;
-    private final List<String> tags;
-    private List<Artist> collaborators;
+    private final List<Artist> collaborators;
 
     // constructor
-    public Song(String title, Artist artist, String releaseDate, Album album, Genre genre, int viewsCount, List<String> tags) {
+    public Song(String title, Artist artist, String releaseDate, Album album, Genre genre, int viewsCount) {
         this.title = title;
         this.artist = artist;
         this.releaseDate = releaseDate;
         this.album = album;
         this.genre = genre;
         this.viewsCount = viewsCount;
-        this.tags = new ArrayList<>(tags);
         this.lyrics = "";
         this.comments = new ArrayList<>();
         this.likedBy = new ArrayList<>();
@@ -61,9 +59,7 @@ public class Song {
     }
 
     //tags getter
-    public List<String> getTags() {
-        return List.copyOf(tags);
-    }
+
 
     //collaborators getter
     public List<Artist> getCollaborators() {

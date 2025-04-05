@@ -4,6 +4,8 @@ import org.NowruzProject.Music.Song;
 
 import java.util.*;
 
+import static org.NowruzProject.ColoredOutput.*;
+
 public class User extends Account {
     private final List<Artist> followingArtists;// Artist list
     private final int MAX_HISTORY = 5;
@@ -22,7 +24,7 @@ public class User extends Account {
     // Method for follow artists
     public void followArtist(Artist artist) {
         if (artist == null) {
-            System.out.println("Artist not found.");
+            System.out.println(RED+"Artist not found.");
             return;
         }
 
@@ -31,35 +33,35 @@ public class User extends Account {
 
         // get accept
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Do you want to follow this artist? (yes/no): ");
+        System.out.print(PURPLE+"Do you want to follow this artist? (yes/no): ");
         String response = scanner.nextLine().trim().toLowerCase();
 
         if (response.equals("yes")) {
             if (!followingArtists.contains(artist)) {
                 followingArtists.add(artist);
-                System.out.println("You are now following " + artist.getUsername() + "!");
+                System.out.println(GREEN+"You are now following " + artist.getUsername() + "!");
             } else {
-                System.out.println("You are already following " + artist.getUsername() + ".");
+                System.out.println(RED+"You are already following " + artist.getUsername() + ".");
             }
         } else {
-            System.out.println("Follow request cancelled.");
+            System.out.println(GREEN+"Follow request cancelled.");
         }
     }
 
     // Method for show the list of following artist
     public void showFollowingArtists() {
         if (followingArtists.isEmpty()) {
-            System.out.println(getUsername() + " is not following any artist.");
+            System.out.println(RED+getUsername() + " is not following any artist.");
         } else {
-            System.out.println(getUsername() + " is following:");
+            System.out.println(BLUE+getUsername() + " is following:");
             for (Artist artist : followingArtists) {
-                System.out.println("- " + artist.getUsername());
+                System.out.println(BLUE+"- " + artist.getUsername());
             }
         }
     }
 
     public void showNewSongsFromFollowedArtists() {
-        System.out.println("\n=== New Songs from Followed Artists ===");
+        System.out.println(BLUE+"\n=== New Songs from Followed Artists ===");
         boolean foundNewSong = false;
 
         for (Artist artist : followingArtists) {
@@ -71,34 +73,34 @@ public class User extends Account {
                 Song latestSong = songs.get(totalSongs - 1);
                 Song secondLatestSong = songs.get(totalSongs - 2);
 
-                System.out.println("- " + latestSong.getTitle() + " by " + artist.getUsername() + " (Released: " + latestSong.getReleaseDate() + ")");
-                System.out.println("- " + secondLatestSong.getTitle() + " by " + artist.getUsername() + " (Released: " + secondLatestSong.getReleaseDate() + ")");
+                System.out.println(BLUE+"- " + latestSong.getTitle() + " by " + artist.getUsername() + " (Released: " + latestSong.getReleaseDate() + ")");
+                System.out.println(BLUE+"- " + secondLatestSong.getTitle() + " by " + artist.getUsername() + " (Released: " + secondLatestSong.getReleaseDate() + ")");
                 foundNewSong = true;
             }
         }
 
         if (!foundNewSong) {
-            System.out.println("No new songs from followed artists.");
+            System.out.println(RED+"No new songs from followed artists.");
         }
     }
 
 
     //View the lyrics of  music
     public void viewLyrics(Song song) {
-        System.out.println("Lyrics for " + song.getTitle() + ":");
+        System.out.println(RESET+"Lyrics for " + song.getTitle() + ":");
         System.out.println(song.getLyrics());
     }
 
     //Request for edit the lyrics of music
     public void requestLyricsEdit(Song song, String newLyrics) {
         song.addLyricsEditRequest(this, newLyrics);
-        System.out.println("Lyrics edit request sent for " + song.getTitle());
+        System.out.println(GREEN+"Lyrics edit request sent for " + song.getTitle());
     }
 
     //Add comment
     public void commentOnSong(Song song, String comment) {
         song.addComment(this, comment);
-        System.out.println("Comment added to " + song.getTitle());
+        System.out.println(GREEN+"Comment added to " + song.getTitle());
     }
 
     //Like songs
@@ -114,7 +116,7 @@ public class User extends Account {
     // Suggest songs based on followed artists
     public void showSuggestions() {
         //suggestion based on followed artists
-        System.out.println(getUsername() + "'s Suggested Songs:");
+        System.out.println(CYAN+getUsername() + "'s Suggested Songs:");
         List<Song> suggestedSongs = new ArrayList<>();
 
         // add songs to the list
@@ -122,14 +124,14 @@ public class User extends Account {
             for (Song song : artist.getSongs()) {
                 if (!suggestedSongs.contains(song)) {
                     suggestedSongs.add(song);
-                    System.out.println(song.getTitle() + " by " + artist.getUsername());
+                    System.out.println(CYAN+song.getTitle() + " by " + artist.getUsername());
                 }
             }
         }
 
         // no suggest is available
         if (suggestedSongs.isEmpty()) {
-            System.out.println("No suggestions available.");
+            System.out.println(RED+"No suggestions available.");
         }
     }
 

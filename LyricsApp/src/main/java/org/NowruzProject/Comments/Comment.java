@@ -58,7 +58,7 @@ public class Comment {
             likedUsers.add(user);
             likeCount++;
 
-            // اگر قبلاً دیس‌لایک کرده بود، دیس‌لایک را حذف کن
+            // if dislike before
             if (dislikedUsers.contains(user)) {
                 dislikedUsers.remove(user);
                 dislikeCount--;
@@ -74,7 +74,7 @@ public class Comment {
             dislikedUsers.add(user);
             dislikeCount++;
 
-            // اگر قبلاً لایک کرده بود، لایک را حذف کن
+            // if liked before
             if (likedUsers.contains(user)) {
                 likedUsers.remove(user);
                 likeCount--;
@@ -107,4 +107,3 @@ public class Comment {
 
 
 }
-
