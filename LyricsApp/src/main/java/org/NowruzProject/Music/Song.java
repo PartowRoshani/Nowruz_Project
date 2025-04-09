@@ -2,6 +2,7 @@ package org.NowruzProject.Music;
 
 import org.NowruzProject.Accounts.Artist;
 import org.NowruzProject.Accounts.User;
+import org.NowruzProject.AnswerAndQuestion.Question;
 import org.NowruzProject.Comments.Comment;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class Song {
     private final Genre genre;
     private int viewsCount;
     private final List<Artist> collaborators;
-
+    private static List<Question> questions;
     // constructor
     public Song(String title, Artist artist, String releaseDate, Album album, Genre genre, int viewsCount) {
         this.title = title;
@@ -36,6 +37,7 @@ public class Song {
         this.dislikedBy = new ArrayList<>();
         this.editRequests = new ArrayList<>();
         this.collaborators = new ArrayList<>();
+        this.questions = new ArrayList<>();
     }
 
     // Method for set the lyrics
@@ -186,6 +188,32 @@ public class Song {
 
     public Genre getGenre() {
         return genre;
+    }
+
+
+    public static void addQuestion(Question question) {
+        questions.add(question);
+    }
+
+    public static void displayQuestionsForSong(Song song) {
+        System.out.println("\n Questions about " + song.getTitle() + ":");
+        boolean found = false;
+        for (int i = 0; i < questions.size(); i++) {
+            if (questions.get(i).getRelatedSong().equals(song)) {
+                System.out.println((i + 1) + ". " + questions.get(i).getAnswers().size() + " answers - " + questions.get(i).getRelatedSong().getTitle());
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No questions yet.");
+        }
+    }
+
+    public static Question getQuestion(int index) {
+        if (index >= 0 && index < questions.size()) {
+            return questions.get(index);
+        }
+        return null;
     }
 
 

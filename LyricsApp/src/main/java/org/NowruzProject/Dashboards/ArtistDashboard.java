@@ -320,57 +320,40 @@ public class ArtistDashboard extends Dashboard {
                 artist.showArtistInfo();
                 return true;
             case 11:
-                System.out.print(YELLOW+"Enter song title: ");
+                System.out.print(PURPLE+"Enter song title: ");
                 songTitle = scanner.nextLine();
                 selectedSong = findSongByTitle(songTitle);
-                //check for null or not
-                if (selectedSong == null) {
+                if (selectedSong != null) {
+                    Song.displayQuestionsForSong(selectedSong);
+                    System.out.print(PURPLE+"Enter the number of a question to view details (or 0 to exit): ");
+                    int questionIndex = scanner.nextInt() - 1;
+                    scanner.nextLine();
+                    if (questionIndex >= 0) {
+                        Question selectedQuestion = Song.getQuestion(questionIndex);
+                        if (selectedQuestion != null) {
+                            selectedQuestion.displayQuestion();
+                            //answer
+                            System.out.print(YELLOW+"Enter your answer: ");
+                            String answerText = scanner.nextLine();
+
+                            //check is answer null or not
+                            if (answerText.trim().isEmpty()) {
+                                System.out.println(RED+"Answer cannot be empty.");
+                                return true;
+                            }
+                            //add answer to question
+                            Answer answer = new Answer(answerText, artist);
+                            selectedQuestion.addAnswer(answer);
+                            System.out.println(GREEN+"Your answer has been added!");
+
+                        } else {
+                            System.out.println(RED+"Invalid question number.");
+                        }
+                    }
+                } else {
                     System.out.println(RED+"Song not found.");
-                    return true;
                 }
-                //show questions list
-                questionManager.displayQuestionsForSong(selectedSong);
-
-
-                // input is number or not
-                System.out.print(YELLOW+"Enter the number of the question you want to answer: ");
-                if (!scanner.hasNextInt()) {
-                    System.out.println(RED+"Invalid input. Please enter a valid question number.");
-                    scanner.nextLine(); //delete incorrect input
-                    return true;
-                }
-
-                int questionIndex = scanner.nextInt() - 1;
-                scanner.nextLine();
-
-                //index is available or not
-                if (questionIndex < 0 || questionIndex >= questionManager.getQuestionCount()) {
-                    System.out.println(RED+"Invalid question number.");
-                    return true;
-                }
-                //get chosen question
-                Question selectedQuestion = questionManager.getQuestion(questionIndex);
-                if (selectedQuestion == null) {
-                    System.out.println(RED+"Invalid question selection.");
-                    return true;
-                }
-
-                //answer
-                System.out.print(YELLOW+"Enter your answer: ");
-                String answerText = scanner.nextLine();
-
-                //check is answer null or not
-                if (answerText.trim().isEmpty()) {
-                    System.out.println(RED+"Answer cannot be empty.");
-                    return true;
-                }
-                //add answer to question
-                Answer answer = new Answer(answerText, artist);
-                selectedQuestion.addAnswer(answer);
-                System.out.println(GREEN+"Your answer has been added!");
-
                 return true;
-
             case 12:
                 System.out.println(GREEN+"Logging out...");
                 return false;

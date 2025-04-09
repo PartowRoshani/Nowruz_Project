@@ -129,6 +129,7 @@ public class UserDashboard extends Dashboard {
                     String questionText = scanner.nextLine();
                     Question question = new Question(questionText, user, selectedSong);
                     questionManager.addQuestion(question);
+                    Song.addQuestion(question);
                     System.out.println(GREEN+"Your question has been added.");
                 } else {
                     System.out.println(RED+"Song not found.");

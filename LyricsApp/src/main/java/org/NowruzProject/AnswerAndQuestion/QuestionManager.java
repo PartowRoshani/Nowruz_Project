@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuestionManager {
-    private List<Question> questions;
+    private final List<Question> questions;
 
     public QuestionManager() {
         this.questions = new ArrayList<>();
@@ -37,7 +37,7 @@ public class QuestionManager {
     }
 
     public int getQuestionCount() {
-        return questions.size(); // list of question
+        return questions.size(); // number of questions
     }
 
 }
