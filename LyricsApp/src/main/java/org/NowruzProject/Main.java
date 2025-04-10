@@ -13,7 +13,9 @@ import org.NowruzProject.Dashboards.Dashboard;
 import org.NowruzProject.Dashboards.UserDashboard;
 import org.NowruzProject.Music.Album;
 import org.NowruzProject.Music.Song;
-import org.NowruzProject.AnswerAndQuestion.QuestionManager;
+import org.NowruzProject.Accounts.AccountManager;
+
+
 
 import static org.NowruzProject.ColoredOutput.*;
 
@@ -24,10 +26,18 @@ public class Main {
     static List<Song> songs = new ArrayList<>();
     static List<Album> albums = new ArrayList<>();
 
+
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         AccountManager accountManager = new AccountManager();
         Account loggedInAccount = null;
+
+        Admin MainAdmin = new Admin("admin", "Admin@123", "admin@example.com", "Default Admin", 35);
+        accountManager.addAccount(MainAdmin);
+        AccountManager.addAdmin(MainAdmin);
+        MainAdmin.setApproved(true);
+
 
         while (true) {
             System.out.println(RESET+"\nWelcome! Choose an option:");

@@ -4,6 +4,9 @@ import org.NowruzProject.Accounts.Admin;
 import org.NowruzProject.Accounts.Artist;
 import org.NowruzProject.Music.MusicManager;
 import org.NowruzProject.Music.Song;
+import org.NowruzProject.Accounts.AccountManager;
+
+import java.util.List;
 
 import static org.NowruzProject.ColoredOutput.*;
 
@@ -26,7 +29,9 @@ public class AdminDashboard extends Dashboard {
         System.out.println(BLUE+"╠═════════════════════════════════════╣");
         System.out.println(BLUE+"║ 3. Your Profile                     ║");
         System.out.println(BLUE+"╠═════════════════════════════════════╣");
-        System.out.println(BLUE+"║ 4. Logout                           ║");
+        System.out.println(BLUE+"║ 4. Approve an Admin                 ║");
+        System.out.println(BLUE+"╠═════════════════════════════════════╣");
+        System.out.println(BLUE+"║ 5. Logout                           ║");
         System.out.println(BLUE+"╚═════════════════════════════════════╝");
 
         System.out.print(RESET+"Choose an option: ");
@@ -37,40 +42,71 @@ public class AdminDashboard extends Dashboard {
     protected boolean handleChoice(int choice) {
         switch (choice) {
             case 1:
-                System.out.print(CYAN+"Enter artist username: ");
+                System.out.print(CYAN + "Enter artist username: ");
                 String artistUsername = scanner.nextLine();
                 Artist artist = MusicManager.getArtistByUsername(artistUsername);
                 if (artist != null) {
                     artist.showArtistInfo();
-                    System.out.print(CYAN+"Do you want to approve this artist? (yes/no): ");
+                    System.out.print(CYAN + "Do you want to approve this artist? (yes/no): ");
                     String decision = scanner.nextLine().trim().toLowerCase();
                     admin.approveArtist(artist, decision.equals("yes"));
                 } else {
-                    System.out.println(CYAN+"Artist not found.");
+                    System.out.println(CYAN + "Artist not found.");
                 }
                 return true;
 
             case 2:
-                System.out.print(CYAN+"Enter song title to review edit requests: ");
+                System.out.print(CYAN + "Enter song title to review edit requests: ");
                 String songTitle = scanner.nextLine();
                 Song song = MusicManager.findSongByTitle(songTitle);
                 if (song != null) {
                     admin.reviewEditRequests(song);
                 } else {
-                    System.out.println(RED+"Song not found.");
+                    System.out.println(RED + "Song not found.");
                 }
                 return true;
             case 3:
                 admin.displayAccountInfo();
                 return true;
             case 4:
-                System.out.println(GREEN+"Logging out...");
+                List<Admin> pending = AccountManager.getPendingAdmins();
+                if (pending.isEmpty()) {
+                    System.out.println(RED + "No pending admin requests.");
+                    break;
+                }
+
+                System.out.println(YELLOW + "Pending Admin Accounts:");
+                for (int i = 0; i < pending.size(); i++) {
+                    Admin a = pending.get(i);
+                    System.out.println((i + 1) + ". " + a.getUsername() + " - " + a.getFullName());
+                }
+
+                System.out.print("Enter the username of the admin to approve: ");
+                String targetUsername = scanner.nextLine();
+                Admin toApprove = null;
+                for (Admin a : pending) {
+                    if (a.getUsername().equals(targetUsername)) {
+                        toApprove = a;
+                        break;
+                    }
+                }
+
+                if (toApprove != null) {
+                    AccountManager.approveAdmin(toApprove);
+                } else {
+                    System.out.println(RED + "No admin found with that username.");
+                }
+                return true;
+            case 5:
+                System.out.println(GREEN + "Logging out...");
                 return false;
 
             default:
-                System.out.println(RED+"Invalid choice. Try again.");
+                System.out.println(RED + "Invalid choice. Try again.");
                 return true;
         }
+
+        return true;
     }
 
 }

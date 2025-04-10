@@ -7,7 +7,9 @@ import static org.NowruzProject.ColoredOutput.GREEN;
 import static org.NowruzProject.ColoredOutput.RED;
 
 public class AccountManager {
-    private Map<String, Account> accounts; // Save accounts by username
+    private Map<String, Account> accounts;// Save accounts by username
+    private static List<Account> admintlist = new ArrayList<>();
+    private static List<Admin> pendingAdmins = new ArrayList<>();
 
     public AccountManager() {
         this.accounts = new HashMap<>();
@@ -60,7 +62,11 @@ public class AccountManager {
                 break;
             case "admin":
                 newAccount = new Admin(username, password, email, fullName, age);
-                break;
+                accounts.put(username, newAccount);
+                requestAdminApproval((Admin) newAccount);
+                System.out.println(GREEN + "Admin account created but needs approval.");
+                return true;
+
             default:
                 System.out.println(RED+"Account type is not exist");
                 return false;
@@ -96,4 +102,34 @@ public class AccountManager {
     public Account getUserByUsername(String username) {
         return accounts.get(username);
     }
+
+
+    public static void addAdmin(Admin admin) {
+        admintlist .add(admin);
+    }
+
+    public void addAccount(Account account) {
+        if (!accounts.containsKey(account.getUsername())) {
+            accounts.put(account.getUsername(), account);
+        }
+    }
+
+
+
+
+    public void requestAdminApproval(Admin admin) {
+        pendingAdmins.add(admin);
+    }
+
+    public static List<Admin> getPendingAdmins() {
+        return pendingAdmins;
+    }
+
+    public static void approveAdmin(Admin admin) {
+        AccountManager.addAdmin(admin);
+        pendingAdmins.remove(admin);
+        System.out.println("Admin " + admin.getUsername() + " has been approved!");
+    }
+
+
 }
