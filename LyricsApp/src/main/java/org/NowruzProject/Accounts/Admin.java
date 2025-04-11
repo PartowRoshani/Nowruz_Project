@@ -55,7 +55,7 @@ public class Admin extends Account {
     public void approveArtist(Artist artist, boolean isApproved) {
         if(approved) {
             if (isApproved) {
-                artist.setApproved(true);  // approved
+                artist.setApproved(true);// approved
                 System.out.println(GREEN + "Admin approved the artist: " + artist.getUsername());
             } else {
                 artist.setApproved(false);  // reject
@@ -67,17 +67,7 @@ public class Admin extends Account {
         }
     }
 
-    public void approveAdmin(Admin admin , boolean isApproved){
-        if(approved){
-            if(isApproved) {
-                admin.setApproved(true);
-                System.out.println(GREEN + "Admin approved the new admin: " + admin.getUsername());
-            } else{
-                admin.setApproved(false);  // reject
-                System.out.println(RED + "Admin rejected the new admin: " + admin.getUsername());
-            }
-        }
-    }
+
 
     public void setApproved(boolean approved) {
         this.approved = approved;

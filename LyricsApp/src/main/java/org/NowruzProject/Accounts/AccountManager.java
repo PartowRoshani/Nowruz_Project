@@ -10,6 +10,7 @@ public class AccountManager {
     private Map<String, Account> accounts;// Save accounts by username
     private static List<Account> admintlist = new ArrayList<>();
     private static List<Admin> pendingAdmins = new ArrayList<>();
+    private static List<Artist> pendingArtists = new ArrayList<>();
 
     public AccountManager() {
         this.accounts = new HashMap<>();
@@ -59,6 +60,7 @@ public class AccountManager {
                 break;
             case "artist":
                 newAccount = new Artist(username, password, email, fullName, age);
+                pendingArtists.add((Artist) newAccount);
                 break;
             case "admin":
                 newAccount = new Admin(username, password, email, fullName, age);
@@ -126,10 +128,25 @@ public class AccountManager {
     }
 
     public static void approveAdmin(Admin admin) {
+        admin.setApproved(true);
         AccountManager.addAdmin(admin);
         pendingAdmins.remove(admin);
         System.out.println("Admin " + admin.getUsername() + " has been approved!");
     }
+
+
+    public static void approveArtist(Artist artist) {
+        artist.setApproved(true);
+        pendingArtists.remove(artist);
+        System.out.println("Artist " + artist.getUsername() + " has been approved!");
+    }
+
+
+
+    public static List<Artist> getPendingArtists() {
+        return pendingArtists;
+    }
+
 
 
 }
