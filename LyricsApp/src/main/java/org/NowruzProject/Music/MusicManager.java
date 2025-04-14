@@ -5,6 +5,7 @@ import org.NowruzProject.Accounts.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class MusicManager {
     // All songs list
@@ -95,5 +96,37 @@ public class MusicManager {
         }
         return null;
     }
+
+    private void searchAlbumByName(List<Artist> artists, Scanner scanner) {
+        System.out.print("Enter album title: ");
+        String searchTitle = scanner.nextLine();
+
+        for (Artist artist : artists) {
+            for (Album album : artist.getAlbums()) {
+                if (album.getTitle().equalsIgnoreCase(searchTitle)) {
+                    System.out.println("Found album: " + album.getTitle() + " by " + artist.getFullName());
+                    System.out.println(album.showAlbumInfo());
+
+                    List<Song> songs = album.getSongs();
+                    for (int i = 0; i < songs.size(); i++) {
+                        System.out.println((i + 1) + ". " + songs.get(i).getTitle());
+                    }
+
+                    System.out.print("Choose a song to view details or 0 to cancel: ");
+                    int choice = scanner.nextInt();
+                    scanner.nextLine();
+
+                    if (choice > 0 && choice <= songs.size()) {
+                        Song Choice = songs.get(choice - 1);
+                        System.out.println(songs.get(choice - 1).getDetails(Choice));
+                    }
+                    return;
+                }
+            }
+        }
+
+        System.out.println("Album not found.");
+    }
+
 
 }

@@ -49,10 +49,12 @@ public class Album {
         return songs;
     }
 
-    public void showAlbumInfo() {
+    public boolean showAlbumInfo() {
         System.out.println("Album Title: " + title);
         System.out.println("Release Date: " + releaseDate);
         System.out.println("Artist: " + artist.getUsername());
+        return false;
     }
+
 
 }

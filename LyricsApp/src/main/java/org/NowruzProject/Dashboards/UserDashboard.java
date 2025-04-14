@@ -65,7 +65,7 @@ public class UserDashboard extends Dashboard {
         System.out.println(CYAN+"╠═════════════════════════════════════╣");
         System.out.println(CYAN+"║ 17. Recent Search                   ║");
         System.out.println(CYAN+"╠═════════════════════════════════════╣");
-        System.out.println(CYAN+"║ 18. Logout                          ║");
+        System.out.println(CYAN+"║ 19. Logout                          ║");
         System.out.println(CYAN+"╚═════════════════════════════════════╝");
         System.out.print(RESET+"Choose an option: ");
     }
@@ -167,6 +167,7 @@ public class UserDashboard extends Dashboard {
                     }
                 }
                 return true;
+
             case 18:
                 System.out.println(GREEN+"Logging out...");
                 return false;

@@ -135,6 +135,8 @@ public class Artist extends Account {
         return allArtists;
     }
 
+    public List<Album> getAlbum(){return albums;}
+
 
 
 
@@ -197,4 +199,8 @@ public class Artist extends Account {
         }
         return null;
     }
+
+
+
+
 }

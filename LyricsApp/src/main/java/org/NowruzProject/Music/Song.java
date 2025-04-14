@@ -8,6 +8,8 @@ import org.NowruzProject.Comments.Comment;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.NowruzProject.ColoredOutput.CYAN;
+
 public class Song {
 
     private final String title;
@@ -216,5 +218,19 @@ public class Song {
         return null;
     }
 
+
+    public boolean getDetails(Song selectedSongFromAlbum) {
+        System.out.println(CYAN+"\n=== Song Details ===");
+        System.out.println("Title: " + selectedSongFromAlbum.getTitle());
+        System.out.println("Genre: " + selectedSongFromAlbum.getGenre());
+        System.out.println("Release Date: " + selectedSongFromAlbum.getReleaseDate());
+        System.out.println("Lyrics: " + selectedSongFromAlbum.getLyrics());
+        System.out.println("Likes: " + selectedSongFromAlbum.getLikesCount());
+        System.out.println("Dislikes: " + selectedSongFromAlbum.getDislikesCount());
+
+        System.out.println(CYAN+"\n=== Comments ===");
+        selectedSongFromAlbum.displayComments();
+        return false;
+    }
 
 }

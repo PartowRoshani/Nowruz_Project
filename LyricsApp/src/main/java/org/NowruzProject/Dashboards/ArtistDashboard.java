@@ -1,18 +1,14 @@
 package org.NowruzProject.Dashboards;
 
-import org.NowruzProject.Accounts.Account;
-import org.NowruzProject.Accounts.User;
+
 import org.NowruzProject.Accounts.Artist;
 import org.NowruzProject.AnswerAndQuestion.Answer;
 import org.NowruzProject.AnswerAndQuestion.Question;
 import org.NowruzProject.AnswerAndQuestion.QuestionManager;
-import org.NowruzProject.Comments.Comment;
-import org.NowruzProject.Music.Genre;
-import org.NowruzProject.Music.MusicManager;
-import org.NowruzProject.Music.Song;
-import org.NowruzProject.Music.Album;
+import org.NowruzProject.Music.*;
 
-import java.util.ArrayList;
+
+import java.util.List;
 import java.util.Scanner;
 
 import static org.NowruzProject.ColoredOutput.*;
@@ -54,7 +50,9 @@ public class ArtistDashboard extends Dashboard {
         System.out.println(BLUE+"╠═════════════════════════════════════╣");
         System.out.println(BLUE+"║ 11. Answer a Question about a Song  ║");
         System.out.println(BLUE+"╠═════════════════════════════════════╣");
-        System.out.println(BLUE+"║ 12. Logout                          ║");
+        System.out.println(BLUE+"║ 12. View Album Details and Songs    ║");
+        System.out.println(BLUE+"╠═════════════════════════════════════╣");
+        System.out.println(BLUE+"║ 13. Logout                          ║");
         System.out.println(BLUE+"╚═════════════════════════════════════╝");
         System.out.print(RESET+"Choose an option: ");
     }
@@ -88,6 +86,8 @@ public class ArtistDashboard extends Dashboard {
                             album = new Album(albumTitle, releaseDate, artist);
                             artist.addAlbum(album);
                         }
+
+
                     }
 
 
@@ -182,6 +182,10 @@ public class ArtistDashboard extends Dashboard {
                     artist.addSong(newSong);
                     MusicManager.addSong(newSong);
 
+                    if(album != null){
+                        album.addSong(newSong);
+                    }
+
                     System.out.print(YELLOW+"Enter lyrics for the song: ");
                     String lyrics = scanner.nextLine();
                     newSong.setLyrics(lyrics);
@@ -251,6 +255,7 @@ public class ArtistDashboard extends Dashboard {
                     String newAlbumTitle = scanner.nextLine();
                     System.out.print(YELLOW+"Enter release date: ");
                     String newAlbumReleaseDate = scanner.nextLine();
+                    Album NewAlbum = new Album(newAlbumTitle, newAlbumReleaseDate, artist);
                     artist.addAlbum(new Album(newAlbumTitle, newAlbumReleaseDate, artist));
                 } else {
                     System.out.println(RED+"You must be approved by an admin to release albums.");
@@ -354,7 +359,60 @@ public class ArtistDashboard extends Dashboard {
                     System.out.println(RED+"Song not found.");
                 }
                 return true;
-            case 12:
+
+            case 12 :
+                if (artist.getAlbums().isEmpty()) {
+                    System.out.println(RED+"You don't have any albums yet.");
+                    return true;
+                }
+
+                // Show Albums list
+                System.out.println(CYAN+"Your Albums:");
+                for (int i = 0; i < artist.getAlbums().size(); i++) {
+                    System.out.println((i + 1) + ". " + artist.getAlbums().get(i).getTitle());
+                }
+
+                System.out.print(YELLOW+"Enter album number to view details (or 0 to cancel): ");
+                int albumIndex = Integer.parseInt(scanner.nextLine()) - 1;
+
+                if (albumIndex >= 0 && albumIndex < artist.getAlbums().size()) {
+                    Album selectedAlbum = artist.getAlbums().get(albumIndex);
+                    System.out.println(CYAN+"\n=== Album Details ===");
+                    System.out.println("Title: " + selectedAlbum.getTitle());
+                    System.out.println("Release Date: " + selectedAlbum.getReleaseDate());
+
+                    List<Song> albumSongs = selectedAlbum.getSongs();
+                    if (albumSongs.isEmpty()) {
+                        System.out.println(RED+"This album has no songs.");
+                    } else {
+                        System.out.println(CYAN+"\nSongs in Album:");
+                        for (int i = 0; i < albumSongs.size(); i++) {
+                            System.out.println((i + 1) + ". " + albumSongs.get(i).getTitle());
+                        }
+
+                        System.out.print(YELLOW+"Enter song number to view details (or 0 to skip): ");
+                        int songIndex = Integer.parseInt(scanner.nextLine()) - 1;
+
+                        if (songIndex >= 0 && songIndex < albumSongs.size()) {
+                            Song selectedSongFromAlbum = albumSongs.get(songIndex);
+                            System.out.println(CYAN+"\n=== Song Details ===");
+                            System.out.println("Title: " + selectedSongFromAlbum.getTitle());
+                            System.out.println("Genre: " + selectedSongFromAlbum.getGenre());
+                            System.out.println("Release Date: " + selectedSongFromAlbum.getReleaseDate());
+                            System.out.println("Lyrics: " + selectedSongFromAlbum.getLyrics());
+                            System.out.println("Likes: " + selectedSongFromAlbum.getLikesCount());
+                            System.out.println("Dislikes: " + selectedSongFromAlbum.getDislikesCount());
+
+                            System.out.println(CYAN+"\n=== Comments ===");
+                            selectedSongFromAlbum.displayComments();
+                        }
+                    }
+                } else {
+                    System.out.println(RED+"Invalid album number.");
+                }
+                return true;
+
+            case 13:
                 System.out.println(GREEN+"Logging out...");
                 return false;
 
@@ -363,4 +421,9 @@ public class ArtistDashboard extends Dashboard {
                 return true;
         }
     }
+
+
+
+
+
 }
