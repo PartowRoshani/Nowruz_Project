@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class MusicManager {
     // All songs list
     private static List<Song> allSongs = new ArrayList<>();
+    public static List<Album> allAlbum = new ArrayList<>();
 
     // add song to general list
     public static void addSong(Song song) {
@@ -33,6 +34,16 @@ public class MusicManager {
             if (song.getArtist().getUsername().equalsIgnoreCase(artistName)) {
                 result.add(song);
             }
+        }
+        return result;
+    }
+
+
+    public static List<Album>findAlbumByArtist(String artistName){
+        List<Album> result = new ArrayList<>();
+        for(Album album :allAlbum){
+            if(album.getArtist().getUsername().equalsIgnoreCase(artistName))
+                result.add(album);
         }
         return result;
     }

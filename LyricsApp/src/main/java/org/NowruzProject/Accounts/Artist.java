@@ -9,6 +9,8 @@ import java.util.*;
 import static org.NowruzProject.ColoredOutput.*;
 
 public class Artist extends Account {
+
+
     private List<Song> songs;  // the list of artist's music
     private List<Album> albums; // the lists of artist's albums
     private static Set<Artist> allArtists = new HashSet<>();
@@ -136,6 +138,8 @@ public class Artist extends Account {
     }
 
     public List<Album> getAlbum(){return albums;}
+
+
 
 
 

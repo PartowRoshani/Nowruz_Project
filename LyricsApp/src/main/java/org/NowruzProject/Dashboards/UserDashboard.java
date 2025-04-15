@@ -1,5 +1,6 @@
 package org.NowruzProject.Dashboards;
 
+import org.NowruzProject.Accounts.Account;
 import org.NowruzProject.Accounts.User;
 import org.NowruzProject.Accounts.Artist;
 import org.NowruzProject.AnswerAndQuestion.Question;
@@ -12,6 +13,7 @@ import org.NowruzProject.Music.Album;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import static org.NowruzProject.ColoredOutput.*;
 
@@ -64,6 +66,8 @@ public class UserDashboard extends Dashboard {
         System.out.println(CYAN+"║ 16. View Questions and Answers      ║");
         System.out.println(CYAN+"╠═════════════════════════════════════╣");
         System.out.println(CYAN+"║ 17. Recent Search                   ║");
+        System.out.println(CYAN+"╠═════════════════════════════════════╣");
+        System.out.println(CYAN+"║ 18. Search Artist's Alums           ║");
         System.out.println(CYAN+"╠═════════════════════════════════════╣");
         System.out.println(CYAN+"║ 19. Logout                          ║");
         System.out.println(CYAN+"╚═════════════════════════════════════╝");
@@ -167,8 +171,10 @@ public class UserDashboard extends Dashboard {
                     }
                 }
                 return true;
-
             case 18:
+                FindAlbumByArtist();
+                return true;
+            case 19:
                 System.out.println(GREEN+"Logging out...");
                 return false;
             default:
@@ -418,9 +424,65 @@ public class UserDashboard extends Dashboard {
                 System.out.println((i + 1) + ". " + songs.get(i).getTitle() + " - " + songs.get(i).getArtist().getUsername());
             }
         }
+
+
     }
 
 
+    private void FindAlbumByArtist(){
+        System.out.print(PURPLE+"Enter artist name: ");
+        String artistName = scanner.nextLine();
+        List<Album> albums = MusicManager.findAlbumByArtist(artistName);
+        if (albums.isEmpty()) {
+            System.out.println(RED+"No Album found for this artist.");
+        } else {
+            System.out.println(GREEN + "\n=== Albums by " + artistName + " ===");
+            for (int i = 0; i < albums.size(); i++) {
+                System.out.println(GREEN + (i + 1) + ". " + albums.get(i).getTitle());
+            }
+            System.out.print(PURPLE + "Enter the number of a song to view details (or 0 to exit): ");
+            int choice = Integer.parseInt(scanner.nextLine());
+            if (choice > 0 && choice <= albums.size()) {
+                Album selectedAlbum = albums.get(choice - 1);
+                System.out.println(GREEN + "\n=== Song Details ===");
+                System.out.println(GREEN + "Title: " + selectedAlbum.getTitle());
+                System.out.println(GREEN + "Artist: " + selectedAlbum.getArtist().getUsername());
+                System.out.println(GREEN + "Release Date: " + selectedAlbum.getReleaseDate());
+                System.out.println("=== Songs ===");
+                System.out.println(CYAN+"\nSongs in Album:");
+                List<Song> albumSongs = selectedAlbum.getSongs();
+                if (albumSongs.isEmpty()) {
+                    System.out.println(RED+"This album has no songs.");
+                } else {
+                    System.out.println(CYAN+"\nSongs in Album:");
+                    for (int i = 0; i < albumSongs.size(); i++) {
+                        System.out.println((i + 1) + ". " + albumSongs.get(i).getTitle());
+                    }
 
+                    System.out.print(YELLOW+"Enter song number to view details (or 0 to skip): ");
+                    int songIndex = Integer.parseInt(scanner.nextLine()) - 1;
+
+                    if (songIndex >= 0 && songIndex < albumSongs.size()) {
+                        Song selectedSongFromAlbum = albumSongs.get(songIndex);
+                        user.addToHistory(selectedSongFromAlbum);
+                        selectedSongFromAlbum.increaseViewCount();
+                        System.out.println(CYAN+"\n=== Song Details ===");
+                        System.out.println("Title: " + selectedSongFromAlbum.getTitle());
+                        System.out.println("Genre: " + selectedSongFromAlbum.getGenre());
+                        System.out.println("Release Date: " + selectedSongFromAlbum.getReleaseDate());
+                        System.out.println("Lyrics: " + selectedSongFromAlbum.getLyrics());
+                        System.out.println("Likes: " + selectedSongFromAlbum.getLikesCount());
+                        System.out.println("Dislikes: " + selectedSongFromAlbum.getDislikesCount());
+
+                        System.out.println(PURPLE+"\n=== Comments ===");
+                        selectedSongFromAlbum.displayComments();
+                    }
+                }
+            } else {
+                System.out.println(RED+"Invalid album number.");
+            }
+        }
+
+    }
 
 }

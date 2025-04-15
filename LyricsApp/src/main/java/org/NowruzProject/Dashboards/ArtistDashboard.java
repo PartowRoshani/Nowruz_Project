@@ -63,7 +63,7 @@ public class ArtistDashboard extends Dashboard {
             case 1:
 
                 String songTitle;
-                if (artist.isApproved()) {
+                if (artist.isApproved() && artist.isActive()) {
                     System.out.print(YELLOW+"Enter song title: ");
                     songTitle = scanner.nextLine();
                     System.out.print(YELLOW+"Enter release date: ");
@@ -85,6 +85,7 @@ public class ArtistDashboard extends Dashboard {
                         if (album == null) {
                             album = new Album(albumTitle, releaseDate, artist);
                             artist.addAlbum(album);
+                            MusicManager.allAlbum.add(album);
                         }
 
 
@@ -250,34 +251,41 @@ public class ArtistDashboard extends Dashboard {
                 artist.viewAlbums();
                 return true;
             case 4:
-                if (artist.isApproved()) {
+                if (artist.isApproved() && artist.isActive()) {
                     System.out.print(YELLOW+"Enter album title: ");
                     String newAlbumTitle = scanner.nextLine();
                     System.out.print(YELLOW+"Enter release date: ");
                     String newAlbumReleaseDate = scanner.nextLine();
                     Album NewAlbum = new Album(newAlbumTitle, newAlbumReleaseDate, artist);
                     artist.addAlbum(new Album(newAlbumTitle, newAlbumReleaseDate, artist));
+                    MusicManager.allAlbum.add(NewAlbum);
+
                 } else {
                     System.out.println(RED+"You must be approved by an admin to release albums.");
                 }
                 return true;
             case 5:
-                System.out.print(YELLOW+"Enter song title to remove: ");
-                String removeSongTitle = scanner.nextLine();
-                Song songToRemove = artist.findSong(removeSongTitle);
-                if (songToRemove != null) {
-                    artist.removeSong(songToRemove);
-                } else {
-                    System.out.println(RED+"Song not found.");
+                if(artist.isApproved() && artist.isActive()) {
+                    System.out.print(YELLOW + "Enter song title to remove: ");
+                    String removeSongTitle = scanner.nextLine();
+                    Song songToRemove = artist.findSong(removeSongTitle);
+                    if (songToRemove != null) {
+                        artist.removeSong(songToRemove);
+                    } else {
+                        System.out.println(RED + "Song not found.");
+                    }
                 }
                 return true;
             case 6:
-                System.out.print(YELLOW+"Enter album title to remove: ");
-                String removeAlbumTitle = scanner.nextLine();
-                artist.removeAlbum(removeAlbumTitle);
+                if(artist.isApproved() && artist.isActive()) {
+                    System.out.print(YELLOW + "Enter album title to remove: ");
+                    String removeAlbumTitle = scanner.nextLine();
+                    artist.removeAlbum(removeAlbumTitle);
+                }
                 return true;
             case 7:
-                System.out.print(YELLOW+"Enter song title to edit: ");
+                if(artist.isApproved() && artist.isActive()){
+                    System.out.print(YELLOW+"Enter song title to edit: ");
                 String editSongTitle = scanner.nextLine();
                 Song songToEdit = artist.findSong(editSongTitle);
                 if (songToEdit != null) {
@@ -285,39 +293,44 @@ public class ArtistDashboard extends Dashboard {
                     String newLyrics = scanner.nextLine();
                     artist.editSong(songToEdit, newLyrics);
                 } else {
-                    System.out.println(RED+"Song not found.");
+                    System.out.println(RED + "Song not found.");
+                    }
                 }
                 return true;
             case 8:
-                System.out.print(YELLOW+"Set active status (true/false): ");
-                boolean isActive = Boolean.parseBoolean(scanner.nextLine());
-                artist.setActive(isActive);
-                System.out.println(GREEN+"Active status updated.");
+                if(artist.isApproved()) {
+                    System.out.print(YELLOW + "Set active status (true/false): ");
+                    boolean isActive = Boolean.parseBoolean(scanner.nextLine());
+                    artist.setActive(isActive);
+                    System.out.println(GREEN + "Active status updated.");
+                }
                 return true;
             case 9:
-                System.out.print(YELLOW+"Enter song title to view change requests: ");
-                String songTitle1 = scanner.nextLine();
-                Song song = artist.findSong(songTitle1);
+                if(artist.isApproved() && artist.isActive()) {
+                    System.out.print(YELLOW + "Enter song title to view change requests: ");
+                    String songTitle1 = scanner.nextLine();
+                    Song song = artist.findSong(songTitle1);
 
-                if (song != null && !song.getEditRequests().isEmpty()) {
-                    System.out.println(GREEN+"Change requests for " + song.getTitle() + ":");
-                    for (int i = 0; i < song.getEditRequests().size(); i++) {
-                        System.out.println((i + 1) + ". " + song.getEditRequests().get(i));
+                    if (song != null && !song.getEditRequests().isEmpty()) {
+                        System.out.println(GREEN + "Change requests for " + song.getTitle() + ":");
+                        for (int i = 0; i < song.getEditRequests().size(); i++) {
+                            System.out.println((i + 1) + ". " + song.getEditRequests().get(i));
+                        }
+
+                        System.out.print(YELLOW + "Enter the request number to approve/reject or 0 to go back: ");
+                        int requestChoice = Integer.parseInt(scanner.nextLine());
+
+                        if (requestChoice > 0 && requestChoice <= song.getEditRequests().size()) {
+                            System.out.print(YELLOW + "Approve change? (yes/no): ");
+                            String approval = scanner.nextLine();
+
+                            // Get the suggested lyrics and send to handle request
+                            String editRequestText = song.getEditRequests().get(requestChoice - 1);
+                            artist.handleEditRequest(song, editRequestText, approval.equalsIgnoreCase("yes"));
+                        }
+                    } else {
+                        System.out.println(RED + "No change requests found.");
                     }
-
-                    System.out.print(YELLOW+"Enter the request number to approve/reject or 0 to go back: ");
-                    int requestChoice = Integer.parseInt(scanner.nextLine());
-
-                    if (requestChoice > 0 && requestChoice <= song.getEditRequests().size()) {
-                        System.out.print(YELLOW+"Approve change? (yes/no): ");
-                        String approval = scanner.nextLine();
-
-                        // Get the suggested lyrics and send to handle request
-                        String editRequestText = song.getEditRequests().get(requestChoice - 1);
-                        artist.handleEditRequest(song, editRequestText, approval.equalsIgnoreCase("yes"));
-                    }
-                } else {
-                    System.out.println(RED+"No change requests found.");
                 }
                 return true;
 
@@ -325,38 +338,40 @@ public class ArtistDashboard extends Dashboard {
                 artist.showArtistInfo();
                 return true;
             case 11:
-                System.out.print(PURPLE+"Enter song title: ");
-                songTitle = scanner.nextLine();
-                selectedSong = findSongByTitle(songTitle);
-                if (selectedSong != null) {
-                    Song.displayQuestionsForSong(selectedSong);
-                    System.out.print(PURPLE+"Enter the number of a question to view details (or 0 to exit): ");
-                    int questionIndex = scanner.nextInt() - 1;
-                    scanner.nextLine();
-                    if (questionIndex >= 0) {
-                        Question selectedQuestion = Song.getQuestion(questionIndex);
-                        if (selectedQuestion != null) {
-                            selectedQuestion.displayQuestion();
-                            //answer
-                            System.out.print(YELLOW+"Enter your answer: ");
-                            String answerText = scanner.nextLine();
+                if(artist.isApproved() && artist.isActive()) {
+                    System.out.print(PURPLE + "Enter song title: ");
+                    songTitle = scanner.nextLine();
+                    selectedSong = findSongByTitle(songTitle);
+                    if (selectedSong != null) {
+                        Song.displayQuestionsForSong(selectedSong);
+                        System.out.print(PURPLE + "Enter the number of a question to view details (or 0 to exit): ");
+                        int questionIndex = scanner.nextInt() - 1;
+                        scanner.nextLine();
+                        if (questionIndex >= 0) {
+                            Question selectedQuestion = Song.getQuestion(questionIndex);
+                            if (selectedQuestion != null) {
+                                selectedQuestion.displayQuestion();
+                                //answer
+                                System.out.print(YELLOW + "Enter your answer: ");
+                                String answerText = scanner.nextLine();
 
-                            //check is answer null or not
-                            if (answerText.trim().isEmpty()) {
-                                System.out.println(RED+"Answer cannot be empty.");
-                                return true;
+                                //check is answer null or not
+                                if (answerText.trim().isEmpty()) {
+                                    System.out.println(RED + "Answer cannot be empty.");
+                                    return true;
+                                }
+                                //add answer to question
+                                Answer answer = new Answer(answerText, artist);
+                                selectedQuestion.addAnswer(answer);
+                                System.out.println(GREEN + "Your answer has been added!");
+
+                            } else {
+                                System.out.println(RED + "Invalid question number.");
                             }
-                            //add answer to question
-                            Answer answer = new Answer(answerText, artist);
-                            selectedQuestion.addAnswer(answer);
-                            System.out.println(GREEN+"Your answer has been added!");
-
-                        } else {
-                            System.out.println(RED+"Invalid question number.");
                         }
+                    } else {
+                        System.out.println(RED + "Song not found.");
                     }
-                } else {
-                    System.out.println(RED+"Song not found.");
                 }
                 return true;
 
