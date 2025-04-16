@@ -43,80 +43,93 @@ public class AdminDashboard extends Dashboard {
     protected boolean handleChoice(int choice) {
         switch (choice) {
             case 1:
-                System.out.print(CYAN + "Enter artist username: ");
-                String artistUsername = scanner.nextLine();
-                Artist artist = MusicManager.getArtistByUsername(artistUsername);
-                if (artist != null) {
-                    artist.showArtistInfo();
-                    System.out.print(CYAN + "Do you want to approve this artist? (yes/no): ");
-                    String decision = scanner.nextLine().trim().toLowerCase();
-                    admin.approveArtist(artist, decision.equals("yes"));
-                    AccountManager.getPendingArtists().remove(artist);
-                } else {
-                    System.out.println(RED + "Artist not found.");
+                if(admin.isApproved()) {
+                    System.out.print(CYAN + "Enter artist username: ");
+                    String artistUsername = scanner.nextLine();
+                    Artist artist = MusicManager.getArtistByUsername(artistUsername);
+                    if (artist != null) {
+                        artist.showArtistInfo();
+                        System.out.print(CYAN + "Do you want to approve this artist? (yes/no): ");
+                        String decision = scanner.nextLine().trim().toLowerCase();
+                        admin.approveArtist(artist, decision.equals("yes"));
+                        AccountManager.getPendingArtists().remove(artist);
+                    } else {
+                        System.out.println(RED + "Artist not found.");
+                    }
                 }
+                else{ System.out.println(RED+"You should approve by another admin ");}
                 return true;
 
             case 2:
-                System.out.print(CYAN + "Enter song title to review edit requests: ");
-                String songTitle = scanner.nextLine();
-                Song song = MusicManager.findSongByTitle(songTitle);
-                if (song != null) {
-                    admin.reviewEditRequests(song);
-                } else {
-                    System.out.println(RED + "Song not found.");
+                if(admin.isApproved()) {
+                    System.out.print(CYAN + "Enter song title to review edit requests: ");
+                    String songTitle = scanner.nextLine();
+                    Song song = MusicManager.findSongByTitle(songTitle);
+                    if (song != null) {
+                        admin.reviewEditRequests(song);
+                    } else {
+                        System.out.println(RED + "Song not found.");
+                    }
                 }
+                else{ System.out.println(RED+"You should approve by another admin ");}
                 return true;
             case 3:
                 admin.displayAccountInfo();
                 return true;
             case 4:
-                List<Admin> pending = AccountManager.getPendingAdmins();
-                if (pending.isEmpty()) {
-                    System.out.println(RED + "No pending admin requests.");
-                    break;
-                }
-
-                System.out.println(YELLOW + "Pending Admin Accounts:");
-                for (int i = 0; i < pending.size(); i++) {
-                    Admin a = pending.get(i);
-                    System.out.println(PURPLE+(i + 1) + ". " + a.getUsername() + " - " + a.getFullName());
-                }
-
-                System.out.print(YELLOW+"Enter the username of the admin to approve: ");
-                String targetUsername = scanner.nextLine();
-                Admin toApprove = null;
-                for (Admin a : pending) {
-                    if (a.getUsername().equals(targetUsername)) {
-                        toApprove = a;
+                if(admin.isApproved()) {
+                    List<Admin> pending = AccountManager.getPendingAdmins();
+                    if (pending.isEmpty()) {
+                        System.out.println(RED + "No pending admin requests.");
                         break;
                     }
-                }
 
-                if (toApprove != null) {
-                    AccountManager.approveAdmin(toApprove);
-                } else {
-                    System.out.println(RED + "No admin found with that username.");
+                    System.out.println(YELLOW + "Pending Admin Accounts:");
+                    for (int i = 0; i < pending.size(); i++) {
+                        Admin a = pending.get(i);
+                        System.out.println(PURPLE + (i + 1) + ". " + a.getUsername() + " - " + a.getFullName());
+                    }
+
+                    System.out.print(YELLOW + "Enter the username of the admin to approve: ");
+                    String targetUsername = scanner.nextLine();
+                    Admin toApprove = null;
+                    for (Admin a : pending) {
+                        if (a.getUsername().equals(targetUsername)) {
+                            toApprove = a;
+                            break;
+                        }
+                    }
+
+                    if (toApprove != null) {
+                        AccountManager.approveAdmin(toApprove);
+                    } else {
+                        System.out.println(RED + "No admin found with that username.");
+                    }
                 }
-                return true;
+                else{ System.out.println(RED+"You should approve by another admin ");}
+                    return true;
+
 
             case 5:
-                List<Artist> pendingArtists =AccountManager.getPendingArtists();
-                if (pendingArtists.isEmpty()) {
-                    System.out.println(RED+"No pending artist requests.");
-                } else {
-                    for (int i = 0; i < pendingArtists.size(); i++) {
-                        System.out.println(PURPLE+(i + 1) + ". " + pendingArtists.get(i).getUsername());
-                    }
-                    System.out.print(YELLOW+"Enter the number of the artist to approve: ");
-                    int artistIndex = scanner.nextInt() - 1;
-                    scanner.nextLine();
-                    if (artistIndex >= 0 && artistIndex < pendingArtists.size()) {
-                        AccountManager.approveArtist(pendingArtists.get(artistIndex));
+                if(admin.isApproved()) {
+                    List<Artist> pendingArtists = AccountManager.getPendingArtists();
+                    if (pendingArtists.isEmpty()) {
+                        System.out.println(RED + "No pending artist requests.");
                     } else {
-                        System.out.println(RED+"Invalid choice.");
+                        for (int i = 0; i < pendingArtists.size(); i++) {
+                            System.out.println(PURPLE + (i + 1) + ". " + pendingArtists.get(i).getUsername());
+                        }
+                        System.out.print(YELLOW + "Enter the number of the artist to approve: ");
+                        int artistIndex = scanner.nextInt() - 1;
+                        scanner.nextLine();
+                        if (artistIndex >= 0 && artistIndex < pendingArtists.size()) {
+                            AccountManager.approveArtist(pendingArtists.get(artistIndex));
+                        } else {
+                            System.out.println(RED + "Invalid choice.");
+                        }
                     }
                 }
+                else{ System.out.println(RED+"You should approve by another admin ");}
                 return true;
             case 6:
                 System.out.println(GREEN + "Logging out...");

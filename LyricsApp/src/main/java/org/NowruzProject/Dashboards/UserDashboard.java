@@ -1,6 +1,5 @@
 package org.NowruzProject.Dashboards;
 
-import org.NowruzProject.Accounts.Account;
 import org.NowruzProject.Accounts.User;
 import org.NowruzProject.Accounts.Artist;
 import org.NowruzProject.AnswerAndQuestion.Question;
@@ -13,7 +12,6 @@ import org.NowruzProject.Music.Album;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import static org.NowruzProject.ColoredOutput.*;
 
@@ -69,7 +67,7 @@ public class UserDashboard extends Dashboard {
         System.out.println(CYAN+"╠═════════════════════════════════════╣");
         System.out.println(CYAN+"║ 18. Search Artist's Alums           ║");
         System.out.println(CYAN+"╠═════════════════════════════════════╣");
-        System.out.println(CYAN+"║ 19. Logout                          ║");
+        System.out.println(CYAN+"║ 20. Logout                          ║");
         System.out.println(CYAN+"╚═════════════════════════════════════╝");
         System.out.print(RESET+"Choose an option: ");
     }
@@ -174,6 +172,7 @@ public class UserDashboard extends Dashboard {
             case 18:
                 FindAlbumByArtist();
                 return true;
+
             case 19:
                 System.out.println(GREEN+"Logging out...");
                 return false;
