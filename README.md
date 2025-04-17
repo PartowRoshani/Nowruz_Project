@@ -102,6 +102,30 @@ Usage in Project:
 Safely checking for null values and comparing object references using methods like Objects.equals() or Objects.requireNonNull().
 
 
+Bonus Tasks
+
+like / dislike comment
+Answer and Question about songs
+Show the last 5 song searches
+recommendation System based on followed artists
+Show top 5 music in the App
+
+
+
+## Main Menu  
+![Main menu](images/Screenshot-2025-04-16-203053.png)
+
+## User Dashboard  
+![User Dashboard 1](images/Screenshot-2025-04-16-203434.png)  
+![User Dashboard 2](images/Screenshot-2025-04-16-203455.png)
+
+## Artist Dashboard  
+![Artist Dashboard](images/Screenshot-2025-04-16-203249.png)
+
+## Admin Dashboard  
+![Admin Dashboard](images/Screenshot-2025-04-16-203205.png)
+
+
 🚀 Getting Started
 1) Step-by-step instructions to get your project up and running:
 
