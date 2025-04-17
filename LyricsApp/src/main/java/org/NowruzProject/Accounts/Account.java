@@ -1,6 +1,6 @@
 package org.NowruzProject.Accounts;
 
-import org.NowruzProject.AccountType;
+import org.NowruzProject.Accounts.AccountType;
 
 public abstract class Account
 {
@@ -57,4 +57,5 @@ public abstract class Account
     }
 
 
+    public Object getPassword() {return  password ;}
 }

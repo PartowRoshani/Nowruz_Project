@@ -2,10 +2,13 @@ package org.NowruzProject.Music;
 
 import org.NowruzProject.Accounts.Artist;
 import org.NowruzProject.Accounts.User;
-import org.NowruzProject.Comment;
+import org.NowruzProject.AnswerAndQuestion.Question;
+import org.NowruzProject.Comments.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.NowruzProject.ColoredOutput.CYAN;
 
 public class Song {
 
@@ -20,22 +23,23 @@ public class Song {
     private final Album album;
     private final Genre genre;
     private int viewsCount;
-    private final List<String> tags;
-
+    private final List<Artist> collaborators;
+    private static List<Question> questions;
     // constructor
-    public Song(String title, Artist artist, String releaseDate, Album album, Genre genre, int viewsCount, List<String> tags) {
+    public Song(String title, Artist artist, String releaseDate, Album album, Genre genre, int viewsCount) {
         this.title = title;
         this.artist = artist;
         this.releaseDate = releaseDate;
         this.album = album;
         this.genre = genre;
         this.viewsCount = viewsCount;
-        this.tags = new ArrayList<>(tags);
         this.lyrics = "";
         this.comments = new ArrayList<>();
         this.likedBy = new ArrayList<>();
         this.dislikedBy = new ArrayList<>();
         this.editRequests = new ArrayList<>();
+        this.collaborators = new ArrayList<>();
+        this.questions = new ArrayList<>();
     }
 
     // Method for set the lyrics
@@ -59,9 +63,23 @@ public class Song {
     }
 
     //tags getter
-    public List<String> getTags() {
-        return List.copyOf(tags);
+
+
+    //collaborators getter
+    public List<Artist> getCollaborators() {
+        return collaborators;
     }
+
+    public void addCollaborator(Artist collaborator) {
+        if (!collaborators.contains(collaborator)) {
+            collaborators.add(collaborator);
+            collaborator.addSong(this);  // Add music to collaborator's song list
+            System.out.println(collaborator.getUsername() + " added as a collaborator on song: " + this.title);
+        } else {
+            System.out.println(collaborator.getUsername() + " is already a collaborator on this song.");
+        }
+    }
+
 
 
     // Method for send the edit requests
@@ -70,9 +88,25 @@ public class Song {
         System.out.println("Lyrics edit request sent for " + title + " by " + user.getUsername());
     }
 
+    public void approveEditRequest(int requestIndex, boolean approve) {
+        if (requestIndex >= 0 && requestIndex < editRequests.size()) {
+            String requestedLyrics = editRequests.get(requestIndex).split(": ")[1];
+            if (approve) {
+                setLyrics(requestedLyrics); // Apply the new lyrics if approved
+                System.out.println("Lyrics for " + title + " updated to: " + requestedLyrics);
+            } else {
+                System.out.println("Lyrics edit request for " + title + " rejected.");
+            }
+            editRequests.remove(requestIndex); // Remove the request after handling
+        } else {
+            System.out.println("Invalid request index.");
+        }
+    }
+
+
     // Method for add comments
     public void addComment(User user, String text) {
-        comments.add(new Comment(text, user));
+        comments.add(new Comment(text, user ));
         System.out.println("Comment added by " + user.getUsername() + " to " + title);
     }
 
@@ -110,6 +144,23 @@ public class Song {
         return new ArrayList<>(editRequests);  // Send a copy
     }
 
+    public void displayComments() {
+        System.out.println("Comments for song: " + this.title);
+        if (comments.isEmpty()) {
+            System.out.println("No comments yet.");
+        } else {
+            int i = 1;
+            for (Comment comment : comments) {
+
+                System.out.println(i+" - " + comment.getUser().getUsername() + ": " + comment.getText());
+                System.out.println("  👍 " + comment.getLikeCount() + " | 👎 " + comment.getDislikeCount());
+                i++;
+            }
+
+        }
+    }
+
+
     //count likes and dislikes
     public int getLikesCount() {
         return likedBy.size();
@@ -121,7 +172,7 @@ public class Song {
 
     //count viewers
     public void increaseViewCount() {
-        viewsCount++;
+        this.viewsCount++;
     }
 
     //getters
@@ -141,5 +192,45 @@ public class Song {
         return genre;
     }
 
+
+    public static void addQuestion(Question question) {
+        questions.add(question);
+    }
+
+    public static void displayQuestionsForSong(Song song) {
+        System.out.println("\n Questions about " + song.getTitle() + ":");
+        boolean found = false;
+        for (int i = 0; i < questions.size(); i++) {
+            if (questions.get(i).getRelatedSong().equals(song)) {
+                System.out.println((i + 1) + ". " + questions.get(i).getAnswers().size() + " answers - " + questions.get(i).getRelatedSong().getTitle());
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No questions yet.");
+        }
+    }
+
+    public static Question getQuestion(int index) {
+        if (index >= 0 && index < questions.size()) {
+            return questions.get(index);
+        }
+        return null;
+    }
+
+
+    public boolean getDetails(Song selectedSongFromAlbum) {
+        System.out.println(CYAN+"\n=== Song Details ===");
+        System.out.println("Title: " + selectedSongFromAlbum.getTitle());
+        System.out.println("Genre: " + selectedSongFromAlbum.getGenre());
+        System.out.println("Release Date: " + selectedSongFromAlbum.getReleaseDate());
+        System.out.println("Lyrics: " + selectedSongFromAlbum.getLyrics());
+        System.out.println("Likes: " + selectedSongFromAlbum.getLikesCount());
+        System.out.println("Dislikes: " + selectedSongFromAlbum.getDislikesCount());
+
+        System.out.println(CYAN+"\n=== Comments ===");
+        selectedSongFromAlbum.displayComments();
+        return false;
+    }
 
 }
