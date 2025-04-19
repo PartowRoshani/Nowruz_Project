@@ -114,16 +114,21 @@ Show top 5 music in the App
 
 ## Main Menu  
 ![Main menu](images/Screenshot-2025-04-16-203053.png)
+<img width="172" alt="Screenshot 2025-04-16 203053" src="https://github.com/user-attachments/assets/9aa75aa0-f7bc-43c7-aade-39092ca46726" />
 
 ## User Dashboard  
-![User Dashboard 1](images/Screenshot-2025-04-16-203434.png)  
-![User Dashboard 2](images/Screenshot-2025-04-16-203455.png)
+
+<img width="249" alt="Screenshot 2025-04-16 203434" src="https://github.com/user-attachments/assets/b580addf-e7cd-4683-b781-416de137a666" />
+<img width="236" alt="Screenshot 2025-04-16 203455" src="https://github.com/user-attachments/assets/9df83d4f-a3ac-43ee-92e8-c3a93832da60" />
 
 ## Artist Dashboard  
-![Artist Dashboard](images/Screenshot-2025-04-16-203249.png)
+
+<img width="257" alt="Screenshot 2025-04-16 203249" src="https://github.com/user-attachments/assets/0afdcff5-e33d-48e9-a7a4-251ed41df319" />
+
 
 ## Admin Dashboard  
-![Admin Dashboard](images/Screenshot-2025-04-16-203205.png)
+
+<img width="277" alt="Screenshot 2025-04-16 203205" src="https://github.com/user-attachments/assets/00b629fd-3fb6-465f-a6e8-e6a39c9a45dc" />
 
 
 🚀 Getting Started
