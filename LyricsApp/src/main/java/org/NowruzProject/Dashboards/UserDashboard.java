@@ -67,7 +67,7 @@ public class UserDashboard extends Dashboard {
         System.out.println(CYAN+"╠═════════════════════════════════════╣");
         System.out.println(CYAN+"║ 18. Search Artist's Alums           ║");
         System.out.println(CYAN+"╠═════════════════════════════════════╣");
-        System.out.println(CYAN+"║ 20. Logout                          ║");
+        System.out.println(CYAN+"║ 19. Logout                          ║");
         System.out.println(CYAN+"╚═════════════════════════════════════╝");
         System.out.print(RESET+"Choose an option: ");
     }
